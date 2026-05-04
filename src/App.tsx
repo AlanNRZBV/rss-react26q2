@@ -1,8 +1,13 @@
-import {Component} from 'react';
+import { Component } from 'react';
+import Layout from './components/Layout/Layout.tsx';
 
 class App extends Component {
   render() {
-    return <div className="text-amber-700">test</div>;
+    return (
+      <Layout>
+        <div>test</div>
+      </Layout>
+    );
   }
 }
 
