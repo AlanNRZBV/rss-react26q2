@@ -1,36 +1,24 @@
 import { Component } from 'react';
 import CustomInput from '../UI/CustomInput/CustomInput.tsx';
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
-import type { SearchBarState } from './SearchBar.types.ts';
 
-const STORAGE_KEY = 'searchTerm';
+type SearchBarProps = {
+  value: string;
+  onChange: (value: string) => void;
+  onSearch: () => void;
+};
 
-class SearchBar extends Component<object, SearchBarState> {
-  constructor(props: object) {
-    super(props);
-    const saved = localStorage.getItem(STORAGE_KEY) ?? '';
-    this.state = { searchTerm: saved };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-  }
-
-  handleChange(value: string) {
-    this.setState({ searchTerm: value });
-  }
-
-  handleSearch() {
-    localStorage.setItem(STORAGE_KEY, this.state.searchTerm);
-  }
-
+class SearchBar extends Component<SearchBarProps> {
   render() {
+    const { value, onChange, onSearch } = this.props;
     return (
       <div className="flex gap-2 max-w-1/2 grow">
         <CustomInput
-          value={this.state.searchTerm}
-          onChange={this.handleChange}
+          value={value}
+          onChange={onChange}
           placeholder="Search..."
         />
-        <CustomButton onClick={this.handleSearch}>Catch!</CustomButton>
+        <CustomButton onClick={onSearch}>Catch!</CustomButton>
       </div>
     );
   }
