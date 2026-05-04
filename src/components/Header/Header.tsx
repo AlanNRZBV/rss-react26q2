@@ -11,13 +11,13 @@ class Header extends Component<Props> {
   render() {
     const { searchTerm, onSearchChange, onSearch } = this.props;
     return (
-      <div className="py-4 flex items-center justify-center">
+      <header className="py-4 flex items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm px-6">
         <SearchBar
           value={searchTerm}
           onChange={onSearchChange}
           onSearch={onSearch}
         />
-      </div>
+      </header>
     );
   }
 }

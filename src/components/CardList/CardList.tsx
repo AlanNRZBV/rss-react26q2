@@ -36,26 +36,26 @@ class CardList extends Component<CardListProps, CardListState> {
 
     if (loading) {
       return (
-        <div className="flex justify-center items-center py-16">
+        <main className="flex justify-center items-center py-16 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
-        </div>
+        </main>
       );
     }
 
     if (error) {
       return (
-        <div className="py-8 text-center text-red-600">
+        <main className="py-8 text-center text-red-600 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <p>{error}</p>
-        </div>
+        </main>
       );
     }
 
     return (
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <main className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 rounded-2xl border border-gray-200 bg-white shadow-sm p-6">
         {pokemons.map((pokemon) => (
           <Card key={pokemon.id} pokemon={pokemon} />
         ))}
-      </div>
+      </main>
     );
   }
 }
