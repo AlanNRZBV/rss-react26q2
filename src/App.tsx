@@ -46,7 +46,10 @@ class App extends Component<object, AppState> {
           onSearch={this.handleSearch}
         />
         <CardList searchTerm={this.state.activeSearchTerm} />
-        <CustomButton onClick={this.handleSimulateError}>
+        <CustomButton
+          onClick={this.handleSimulateError}
+          className="self-end bg-red-200"
+        >
           Simulate Error
         </CustomButton>
       </Layout>
