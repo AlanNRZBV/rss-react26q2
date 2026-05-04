@@ -1,9 +1,9 @@
 import { Component } from 'react';
 
-interface Props {
+type Props = {
   error: Error;
   resetError: () => void;
-}
+};
 
 class ErrorFallback extends Component<Props> {
   render() {
