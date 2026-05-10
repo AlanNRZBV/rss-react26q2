@@ -44,10 +44,12 @@ describe('CardList Component', () => {
 
     vi.mocked(fetchPokemons).mockResolvedValue(mockData);
 
-    render(<CardList searchTerm="bulbasaur" />);
+    const { container } = render(<CardList searchTerm="bulbasaur" />);
 
     const cards = await screen.findAllByTestId('mock-card');
-
     expect(cards).toHaveLength(3);
+
+    const spinner = container.querySelector('.animate-spin');
+    expect(spinner).not.toBeInTheDocument();
   });
 });
