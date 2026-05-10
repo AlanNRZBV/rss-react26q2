@@ -50,6 +50,14 @@ class CardList extends Component<CardListProps, CardListState> {
       );
     }
 
+    if (pokemons.length === 0) {
+      return (
+        <main className="py-16 text-center rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <p className="text-gray-500 font-medium">No results</p>
+        </main>
+      );
+    }
+
     return (
       <main className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 rounded-2xl border border-gray-200 bg-white shadow-sm p-6">
         {pokemons.map((pokemon) => (
