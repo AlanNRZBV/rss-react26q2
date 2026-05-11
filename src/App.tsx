@@ -30,8 +30,13 @@ class App extends Component<object, AppState> {
   }
 
   handleSearch() {
-    localStorage.setItem(STORAGE_KEY, this.state.searchTerm);
-    this.setState({ activeSearchTerm: this.state.searchTerm });
+    const trimmedTerm = this.state.searchTerm.trim();
+
+    localStorage.setItem(STORAGE_KEY, trimmedTerm);
+    this.setState({
+      activeSearchTerm: trimmedTerm,
+      searchTerm: trimmedTerm,
+    });
   }
 
   render() {
