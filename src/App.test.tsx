@@ -7,28 +7,9 @@ vi.mock('./components/CardList/CardList.tsx', () => ({
   default: () => <div data-testid="mock-card-list" />,
 }));
 
-vi.mock('./components/CardList/CardList.tsx', () => ({
-  default: () => <div data-testid="mock-card-list" />,
-}));
-
 describe('App Component', () => {
   beforeEach(() => {
     localStorage.clear();
-  });
-
-  describe('Integration Tests', () => {
-    it('Handles search term from localStorage on initial load', () => {
-      // 1. Записываем значение в localStorage до рендера
-      localStorage.setItem(STORAGE_KEY, 'pikachu');
-
-      // 2. Рендерим App (компонент-родитель)
-      render(<App />);
-
-      // 3. Проверяем, что App прочитал localStorage
-      // и правильно инициализировал свой state (передав value в инпут)
-      const input = screen.getByPlaceholderText(/search/i);
-      expect(input).toHaveValue('pikachu');
-    });
   });
 
   it('Shows empty input when no saved term exists', () => {

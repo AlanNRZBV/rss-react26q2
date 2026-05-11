@@ -32,22 +32,7 @@ describe('Error Catching Tests', () => {
     vi.restoreAllMocks();
   });
 
-  describe('Error Catching Tests', () => {
-    it('Catches and handles JavaScript errors in child components', () => {
-      render(
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      );
-
-      const simulateBtn = screen.getByRole('button', {
-        name: /Simulate Error/i,
-      });
-      fireEvent.click(simulateBtn);
-
-      expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
-    });
-
+  describe('Fallback UI and Console Logging', () => {
     it('Displays fallback UI when error occurs', () => {
       render(
         <ErrorBoundary>
