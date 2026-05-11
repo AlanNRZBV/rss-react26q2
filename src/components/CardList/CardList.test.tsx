@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CardList from './CardList';
 import { fetchPokemons } from '../../api/pokemons';
 import type { PokemonCardData } from '../../types';
-import { mockPokemonList } from '../../tests/mocks/pokemonData';
+import { mockPokemonList } from '../../test-utils/mocks/pokemonData';
 
 vi.mock('../../api/pokemons', () => ({
   fetchPokemons: vi.fn(),

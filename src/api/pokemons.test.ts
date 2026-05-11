@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
 import { fetchPokemons } from './pokemons';
 import { baseApi } from './instance.ts';
-import { rawPokemonResponse } from '../tests/mocks/pokemonData';
+import { rawPokemonResponse } from '../test-utils/mocks/pokemonData';
 
 vi.mock('axios');
 
