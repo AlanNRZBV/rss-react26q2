@@ -45,4 +45,39 @@ describe('API Error Handling Tests', () => {
       'Server error (500). Please try again later.'
     );
   });
+
+  it('Fetches list of pokemons when searchTerm is empty', async () => {
+    vi.mocked(baseApi.get).mockResolvedValueOnce({
+      data: {
+        results: [{ name: 'bulbasaur', url: '/pokemon/1' }],
+      },
+    });
+
+    vi.mocked(axios.get).mockResolvedValueOnce({
+      data: {
+        id: 1,
+        name: 'bulbasaur',
+        sprites: {
+          front_default: 'url',
+          other: { 'official-artwork': { front_default: 'url' } },
+        },
+        types: [{ type: { name: 'grass' } }],
+        stats: [
+          { stat: { name: 'hp' }, base_stat: 45 },
+          { stat: { name: 'attack' }, base_stat: 49 },
+        ],
+      },
+    });
+
+    const result = await fetchPokemons();
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('bulbasaur');
+  });
+
+  it('Throws generic error if not an AxiosError', async () => {
+    vi.mocked(axios.isAxiosError).mockReturnValue(false);
+    vi.mocked(baseApi.get).mockRejectedValue(new Error('Standard JS Error'));
+
+    await expect(fetchPokemons('test')).rejects.toThrow('Standard JS Error');
+  });
 });
