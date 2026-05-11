@@ -37,7 +37,11 @@ class CardList extends Component<CardListProps, CardListState> {
     if (loading) {
       return (
         <main className="flex justify-center items-center py-16 rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+          <div
+            role="status"
+            aria-label="Loading pokemons"
+            className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"
+          />
         </main>
       );
     }
