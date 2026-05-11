@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CardList from './CardList';
 import { fetchPokemons } from '../../api/pokemons';
 import type { PokemonCardData } from '../../types';
+import { mockPokemonList } from '../../tests/mocks/pokemonData';
 
 vi.mock('../../api/pokemons', () => ({
   fetchPokemons: vi.fn(),
@@ -23,12 +24,7 @@ describe('CardList Component', () => {
 
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
-      const mockData = [
-        { id: 1, name: 'bulbasaur' },
-        { id: 2, name: 'charmander' },
-      ] as unknown as PokemonCardData[];
-
-      vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+      vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
 
       render(<CardList searchTerm="" />);
 
@@ -119,14 +115,11 @@ describe('CardList Component', () => {
     });
 
     it('Handles successful API responses', async () => {
-      const mockData = [
-        { id: 1, name: 'ditto' },
-      ] as unknown as PokemonCardData[];
-      vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+      vi.mocked(fetchPokemons).mockResolvedValue([mockPokemonList[0]]);
 
-      render(<CardList searchTerm="ditto" />);
+      render(<CardList searchTerm="bulbasaur" />);
 
-      const card = await screen.findByText('ditto');
+      const card = await screen.findByText('bulbasaur');
       expect(card).toBeInTheDocument();
     });
 
@@ -144,12 +137,7 @@ describe('CardList Component', () => {
 
   describe('State Management Tests', () => {
     it('Updates component state based on API responses', async () => {
-      const mockData = [
-        { id: 1, name: 'pidgey' },
-        { id: 2, name: 'rattata' },
-      ] as unknown as PokemonCardData[];
-
-      vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+      vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
 
       render(<CardList searchTerm="" />);
 
@@ -177,18 +165,12 @@ describe('CardList Component', () => {
   });
 
   it('Renders correct number of items when data is provided', async () => {
-    const mockData = [
-      { id: 1, name: 'bulbasaur' },
-      { id: 2, name: 'ivysaur' },
-      { id: 3, name: 'venusaur' },
-    ] as unknown as PokemonCardData[];
-
-    vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+    vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
 
     const { container } = render(<CardList searchTerm="bulbasaur" />);
 
     const cards = await screen.findAllByTestId('mock-card');
-    expect(cards).toHaveLength(3);
+    expect(cards).toHaveLength(2);
 
     const spinner = container.querySelector('.animate-spin');
     expect(spinner).not.toBeInTheDocument();
