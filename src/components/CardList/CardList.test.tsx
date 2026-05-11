@@ -69,6 +69,19 @@ describe('CardList Component', () => {
     });
   });
 
+  describe('Accessibility Tests', () => {
+    it('Has appropriate ARIA labels for screen readers', () => {
+      vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
+
+      render(<CardList searchTerm="" />);
+
+      const spinner = screen.getByLabelText(/loading pokemons/i);
+
+      expect(spinner).toBeInTheDocument();
+      expect(spinner).toHaveAttribute('role', 'status');
+    });
+  });
+
   it('Shows loading state while fetching data', () => {
     vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
 
