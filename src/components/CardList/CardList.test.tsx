@@ -82,6 +82,82 @@ describe('CardList Component', () => {
     });
   });
 
+  describe('Integration Tests', () => {
+    it('Makes initial API call on component mount', () => {
+      render(<CardList searchTerm="" />);
+
+      expect(fetchPokemons).toHaveBeenCalledTimes(1);
+    });
+
+    it('Manages loading states during API calls', async () => {
+      let resolveApi: (val: PokemonCardData[]) => void;
+      vi.mocked(fetchPokemons).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveApi = resolve;
+          })
+      );
+
+      render(<CardList searchTerm="" />);
+
+      const spinner = screen.getByLabelText(/loading pokemons/i);
+      expect(spinner).toBeInTheDocument();
+
+      resolveApi!([]);
+
+      const noResults = await screen.findByText(/no results/i);
+      expect(noResults).toBeInTheDocument();
+      expect(spinner).not.toBeInTheDocument();
+    });
+  });
+
+  describe('API Integration Tests', () => {
+    it('Calls API with correct parameters', () => {
+      render(<CardList searchTerm="mewtwo" />);
+
+      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo');
+    });
+
+    it('Handles successful API responses', async () => {
+      const mockData = [
+        { id: 1, name: 'ditto' },
+      ] as unknown as PokemonCardData[];
+      vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+
+      render(<CardList searchTerm="ditto" />);
+
+      const card = await screen.findByText('ditto');
+      expect(card).toBeInTheDocument();
+    });
+
+    it('Handles API error responses', async () => {
+      vi.mocked(fetchPokemons).mockRejectedValue(
+        new Error('No Pokémon found.')
+      );
+
+      render(<CardList searchTerm="unknown" />);
+
+      const errorMsg = await screen.findByText('No Pokémon found.');
+      expect(errorMsg).toBeInTheDocument();
+    });
+  });
+
+  describe('State Management Tests', () => {
+    it('Updates component state based on API responses', async () => {
+      const mockData = [
+        { id: 1, name: 'pidgey' },
+        { id: 2, name: 'rattata' },
+      ] as unknown as PokemonCardData[];
+
+      vi.mocked(fetchPokemons).mockResolvedValue(mockData);
+
+      render(<CardList searchTerm="" />);
+
+      const cards = await screen.findAllByTestId('mock-card');
+      expect(cards).toHaveLength(2);
+    });
+  });
+
   it('Shows loading state while fetching data', () => {
     vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
 

@@ -16,13 +16,19 @@ describe('App Component', () => {
     localStorage.clear();
   });
 
-  it('Displays previously saved search term from localStorage on mount', () => {
-    localStorage.setItem(STORAGE_KEY, 'pikachu');
+  describe('Integration Tests', () => {
+    it('Handles search term from localStorage on initial load', () => {
+      // 1. Записываем значение в localStorage до рендера
+      localStorage.setItem(STORAGE_KEY, 'pikachu');
 
-    render(<App />);
+      // 2. Рендерим App (компонент-родитель)
+      render(<App />);
 
-    const input = screen.getByPlaceholderText(/search/i);
-    expect(input).toHaveValue('pikachu');
+      // 3. Проверяем, что App прочитал localStorage
+      // и правильно инициализировал свой state (передав value в инпут)
+      const input = screen.getByPlaceholderText(/search/i);
+      expect(input).toHaveValue('pikachu');
+    });
   });
 
   it('Shows empty input when no saved term exists', () => {
@@ -58,6 +64,21 @@ describe('App Component', () => {
       fireEvent.change(input, { target: { value: 'snorlax' } });
       fireEvent.click(button);
 
+      expect(localStorage.getItem(STORAGE_KEY)).toBe('snorlax');
+    });
+  });
+
+  describe('State Management Tests', () => {
+    it('Manages search term state correctly', () => {
+      render(<App />);
+
+      const input = screen.getByPlaceholderText(/search/i);
+      const button = screen.getByRole('button', { name: /catch/i });
+
+      fireEvent.change(input, { target: { value: 'snorlax' } });
+      expect(input).toHaveValue('snorlax');
+
+      fireEvent.click(button);
       expect(localStorage.getItem(STORAGE_KEY)).toBe('snorlax');
     });
   });

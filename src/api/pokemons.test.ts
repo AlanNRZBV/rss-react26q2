@@ -1,8 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
 import { fetchPokemons } from './pokemons';
+import { baseApi } from './instance.ts';
 
 vi.mock('axios');
+
+vi.mock('./instance', () => ({
+  baseApi: {
+    get: vi.fn(),
+  },
+}));
 
 describe('API Error Handling Tests', () => {
   it('Shows appropriate error for different HTTP status codes (4xx)', async () => {
@@ -11,6 +18,8 @@ describe('API Error Handling Tests', () => {
       response: { status: 404 },
       message: 'Not Found',
     };
+
+    vi.mocked(baseApi.get).mockRejectedValue(mockAxiosError);
 
     vi.mocked(axios.isAxiosError).mockReturnValue(true);
     vi.mocked(axios.get).mockRejectedValue(mockAxiosError);
@@ -26,6 +35,8 @@ describe('API Error Handling Tests', () => {
       response: { status: 500 },
       message: 'Internal Server Error',
     };
+
+    vi.mocked(baseApi.get).mockRejectedValue(mockAxiosError);
 
     vi.mocked(axios.isAxiosError).mockReturnValue(true);
     vi.mocked(axios.get).mockRejectedValue(mockAxiosError);
