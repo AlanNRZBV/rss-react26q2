@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { PokemonCardData } from '../types';
+import { baseApi } from './instance.ts';
 
 type RawStat = {
   stat: { name: string };
@@ -55,16 +56,12 @@ export async function fetchPokemons(
     const term = searchTerm.trim().toLowerCase();
 
     if (term) {
-      const { data } = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${term}`
-      );
+      const { data } = await baseApi.get(`/${term}`);
 
       return [formatPokemonData(data)];
     }
 
-    const listResponse = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
-    );
+    const listResponse = await baseApi.get(`?limit=${limit}&offset=${offset}`);
 
     const detailedPromises = listResponse.data.results.map(
       async (item: { name: string; url: string }) => {
