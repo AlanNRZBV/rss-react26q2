@@ -2,18 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import Card from './Card';
 import type { PokemonCardData } from '../../types';
-
-const mockPokemon: PokemonCardData = {
-  id: 25,
-  name: 'pikachu',
-  imageUrl:
-    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
-  types: ['electric', 'normal'],
-  stats: {
-    hp: 35,
-    attack: 55,
-  },
-};
+import { mockPokemon } from '../../tests/mocks/pokemonData';
 
 const corruptedPokemon: { id: number; name: string } = {
   id: 99,

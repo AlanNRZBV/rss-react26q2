@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import axios from 'axios';
 import { fetchPokemons } from './pokemons';
 import { baseApi } from './instance.ts';
+import { rawPokemonResponse } from '../tests/mocks/pokemonData';
 
 vi.mock('axios');
 
@@ -54,19 +55,7 @@ describe('API Error Handling Tests', () => {
     });
 
     vi.mocked(axios.get).mockResolvedValueOnce({
-      data: {
-        id: 1,
-        name: 'bulbasaur',
-        sprites: {
-          front_default: 'url',
-          other: { 'official-artwork': { front_default: 'url' } },
-        },
-        types: [{ type: { name: 'grass' } }],
-        stats: [
-          { stat: { name: 'hp' }, base_stat: 45 },
-          { stat: { name: 'attack' }, base_stat: 49 },
-        ],
-      },
+      data: rawPokemonResponse,
     });
 
     const result = await fetchPokemons();
