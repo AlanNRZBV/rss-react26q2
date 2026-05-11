@@ -32,48 +32,86 @@ describe('Error Catching Tests', () => {
     vi.restoreAllMocks();
   });
 
-  it('Catches and handles JavaScript errors in child components', () => {
-    render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
+  describe('Error Catching Tests', () => {
+    it('Catches and handles JavaScript errors in child components', () => {
+      render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
 
-    const simulateBtn = screen.getByRole('button', { name: /Simulate Error/i });
+      const simulateBtn = screen.getByRole('button', {
+        name: /Simulate Error/i,
+      });
+      fireEvent.click(simulateBtn);
 
-    fireEvent.click(simulateBtn);
+      expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
+    });
 
-    expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
+    it('Displays fallback UI when error occurs', () => {
+      render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: /Simulate Error/i }));
+
+      expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
+      expect(
+        screen.getByText('Simulated application error')
+      ).toBeInTheDocument();
+    });
+
+    it('Logs error to console', () => {
+      render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: /Simulate Error/i }));
+
+      expect(console.error).toHaveBeenCalled();
+    });
   });
 
-  it('Displays fallback UI when error occurs', () => {
-    render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
+  describe('Error Button Tests', () => {
+    it('Throws error when test button is clicked', () => {
+      render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
 
-    const simulateBtn = screen.getByRole('button', { name: /Simulate Error/i });
-    fireEvent.click(simulateBtn);
+      const simulateBtn = screen.getByRole('button', {
+        name: /Simulate Error/i,
+      });
+      fireEvent.click(simulateBtn);
 
-    expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
+      expect(console.error).toHaveBeenCalledWith(
+        'Simulated error triggered by user'
+      );
+    });
 
-    expect(screen.getByText('Simulated application error')).toBeInTheDocument();
+    it('Triggers error boundary fallback UI', () => {
+      render(
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      );
+
+      expect(screen.queryByTestId('fallback-ui')).not.toBeInTheDocument();
+
+      const simulateBtn = screen.getByRole('button', {
+        name: /Simulate Error/i,
+      });
+
+      fireEvent.click(simulateBtn);
+
+      expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
+    });
   });
-
-  it('Logs error to console', () => {
-    render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
-
-    const simulateBtn = screen.getByRole('button', { name: /Simulate Error/i });
-    fireEvent.click(simulateBtn);
-
-    expect(console.error).toHaveBeenCalled();
-  });
-
   it('Recovers from error when reset is clicked', () => {
     render(
       <ErrorBoundary>
