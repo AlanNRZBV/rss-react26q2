@@ -8,18 +8,27 @@ type Props = {
 class Card extends Component<Props> {
   render() {
     const { pokemon } = this.props;
+
+    if (!pokemon) {
+      return null;
+    }
+
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm flex flex-col items-center gap-2">
         <img
-          src={pokemon.imageUrl}
-          alt={pokemon.name}
+          src={
+            pokemon.imageUrl
+              ? pokemon.imageUrl
+              : 'https://placehold.co/64x128?text=NoImage'
+          }
+          alt={pokemon.name ? pokemon.name : ''}
           className="h-24 w-24 object-contain"
         />
         <h3 className="capitalize font-semibold text-gray-800">
-          {pokemon.name}
+          {pokemon.name ? pokemon.name : 'N/A'}
         </h3>
         <div className="flex gap-1 flex-wrap justify-center">
-          {pokemon.types.map((type) => (
+          {pokemon.types?.map((type) => (
             <span
               key={type}
               className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 capitalize"
@@ -29,8 +38,8 @@ class Card extends Component<Props> {
           ))}
         </div>
         <div className="text-sm text-gray-600 w-full">
-          <p>HP: {pokemon.stats.hp}</p>
-          <p>Attack: {pokemon.stats.attack}</p>
+          <p>HP: {pokemon.stats?.hp ? pokemon.stats.hp : 'N/A'}</p>
+          <p>Attack: {pokemon.stats?.attack ? pokemon.stats.attack : 'N/A'}</p>
         </div>
       </div>
     );

@@ -37,7 +37,11 @@ class CardList extends Component<CardListProps, CardListState> {
     if (loading) {
       return (
         <main className="flex justify-center items-center py-16 rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
+          <div
+            role="status"
+            aria-label="Loading pokemons"
+            className="h-10 w-10 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"
+          />
         </main>
       );
     }
@@ -46,6 +50,14 @@ class CardList extends Component<CardListProps, CardListState> {
       return (
         <main className="py-8 text-center text-red-600 rounded-2xl border border-gray-200 bg-white shadow-sm">
           <p>{error}</p>
+        </main>
+      );
+    }
+
+    if (pokemons.length === 0) {
+      return (
+        <main className="py-16 text-center rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <p className="text-gray-500 font-medium">No results</p>
         </main>
       );
     }
