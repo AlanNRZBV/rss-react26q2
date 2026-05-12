@@ -9,6 +9,7 @@ export default defineConfig({
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
+      routeFileIgnorePattern: '.(test|spec).tsx',
     }),
     react(),
     tailwindcss(),
