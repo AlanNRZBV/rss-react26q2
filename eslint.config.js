@@ -6,7 +6,6 @@ import reactPlugin from 'eslint-plugin-react';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import tseslint from 'typescript-eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import pluginRouter from '@tanstack/eslint-plugin-router';
 
 export default defineConfig([
   globalIgnores(['dist', 'coverage', 'src/routeTree.gen.ts']),
@@ -20,7 +19,6 @@ export default defineConfig([
       reactPlugin.configs.flat.recommended,
       reactPlugin.configs.flat['jsx-runtime'],
       eslintConfigPrettier,
-      pluginRouter.configs['flat/recommended'],
     ],
     languageOptions: {
       globals: globals.browser,
