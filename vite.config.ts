@@ -28,6 +28,7 @@ export default defineConfig({
         'src/main.tsx',
         'src/setupTests.{js,ts}',
         'src/**/*.d.ts',
+        'src/**/*.types.ts',
       ],
       thresholds: {
         global: {

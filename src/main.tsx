@@ -5,8 +5,14 @@ import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.tsx';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen.ts';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import ErrorFallback from './components/ErrorBoundary/ErrorFallback.tsx';
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  defaultErrorComponent: ({ error, reset }) => (
+    <ErrorFallback error={error} resetError={reset} />
+  ),
+});
 
 declare module '@tanstack/react-router' {
   interface Register {
