@@ -1,5 +1,7 @@
 import SearchBar from '../SearchBar/SearchBar.tsx';
 import type { FC } from 'react';
+import NavBar from '../NavBar/NavBar.tsx';
+import BarContainer from '../UI/BarContainer/BarContainer.tsx';
 
 type HeaderProps = {
   searchTerm: string;
@@ -9,13 +11,14 @@ type HeaderProps = {
 
 const Header: FC<HeaderProps> = ({ searchTerm, onSearchChange, onSearch }) => {
   return (
-    <header className="py-4 flex items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm px-6">
+    <BarContainer as="header">
+      <NavBar />
       <SearchBar
         value={searchTerm}
         onChange={onSearchChange}
         onSearch={onSearch}
       />
-    </header>
+    </BarContainer>
   );
 };
 

@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage.ts';
 import { STORAGE_KEY } from '../lib/constants.ts';
-import Layout from '../components/Layout/Layout.tsx';
 import Header from '../components/Header/Header.tsx';
 import CardList from '../components/CardList/CardList.tsx';
 import CustomButton from '../components/UI/CustomButton/CustomButton.tsx';
@@ -40,7 +39,7 @@ function RouteComponent() {
   }
 
   return (
-    <Layout>
+    <>
       <Header
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
@@ -53,6 +52,6 @@ function RouteComponent() {
       >
         Simulate Error
       </CustomButton>
-    </Layout>
+    </>
   );
 }
