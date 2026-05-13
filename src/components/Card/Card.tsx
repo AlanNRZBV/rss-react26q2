@@ -30,7 +30,7 @@ const Card: FC<CardProps> = ({ pokemon }) => {
           </span>
         ))}
       </div>
-      <div className="text-sm text-gray-600 w-full">
+      <div className="text-sm text-gray-600 w-full mt-auto">
         <p>HP: {pokemon.stats?.hp ?? 'N/A'}</p>
         <p>Attack: {pokemon.stats?.attack ?? 'N/A'}</p>
       </div>
