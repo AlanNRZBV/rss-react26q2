@@ -28,6 +28,11 @@ type PokeAPIDetails = {
   stats: RawStat[];
 };
 
+export type PokemonsResponse = {
+  results: PokemonCardData[];
+  total: number;
+};
+
 function formatPokemonData(details: PokeAPIDetails): PokemonCardData {
   return {
     id: details.id,
@@ -49,19 +54,28 @@ function formatPokemonData(details: PokeAPIDetails): PokemonCardData {
 
 export async function fetchPokemons(
   searchTerm = '',
-  limit = 18,
+  limit = 10,
   offset = 0
-): Promise<PokemonCardData[]> {
+): Promise<PokemonsResponse> {
   try {
     const term = searchTerm.trim().toLowerCase();
 
     if (term) {
       const { data } = await baseApi.get(`/${term}`);
 
-      return [formatPokemonData(data)];
+      return {
+        results: [formatPokemonData(data)],
+        total: 1,
+      };
     }
 
-    const listResponse = await baseApi.get(`?limit=${limit}&offset=${offset}`);
+    const listResponse = await baseApi.get<{
+      count: number;
+      previous: string;
+      next: string;
+      results: { name: string; url: string }[];
+    }>(`?limit=${limit}&offset=${offset}`);
+    const totalCount = listResponse.data.count;
 
     const detailedPromises = listResponse.data.results.map(
       async (item: { name: string; url: string }) => {
@@ -71,7 +85,12 @@ export async function fetchPokemons(
       }
     );
 
-    return await Promise.all(detailedPromises);
+    const detailedResults = await Promise.all(detailedPromises);
+
+    return {
+      results: detailedResults,
+      total: totalCount,
+    };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;

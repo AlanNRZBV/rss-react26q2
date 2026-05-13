@@ -8,6 +8,11 @@ import CustomButton from '../components/UI/CustomButton/CustomButton.tsx';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
+  validateSearch: (search) => {
+    return {
+      page: Number(search?.page) || 1,
+    };
+  },
 });
 
 function RouteComponent() {
