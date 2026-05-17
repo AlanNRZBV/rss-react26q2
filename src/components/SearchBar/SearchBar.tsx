@@ -10,7 +10,7 @@ type SearchBarProps = {
 
 const SearchBar: FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
   return (
-    <div className="flex gap-2 max-w-1/2 grow">
+    <div className="flex gap-2 sm:max-w-1/2 grow">
       <CustomInput value={value} onChange={onChange} placeholder="Search..." />
       <CustomButton onClick={onSearch}>Catch!</CustomButton>
     </div>

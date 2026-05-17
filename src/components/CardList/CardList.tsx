@@ -75,13 +75,14 @@ const CardList = ({ searchTerm }: CardListProps) => {
   }
 
   return (
-    <main
-      className="flex flex-col gap-6 rounded-2xl border border-gray-200
-      bg-white shadow-sm p-6"
-    >
+    <div className="flex flex-col gap-6">
       <div
-        className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6
-     "
+        className={`grid gap-2 lg:gap-4 transition-all duration-300
+        ${
+          isDetailsOpen
+            ? 'grid-cols-1 sm:grid-cols-1 lg:grid-cols-3'
+            : 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-5'
+        }`}
       >
         {pokemons.map((pokemon) => (
           <Card key={pokemon.id} pokemon={pokemon} />
@@ -93,7 +94,7 @@ const CardList = ({ searchTerm }: CardListProps) => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-    </main>
+    </div>
   );
 };
 

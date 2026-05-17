@@ -11,7 +11,7 @@ type HeaderProps = {
 
 const Header: FC<HeaderProps> = ({ searchTerm, onSearchChange, onSearch }) => {
   return (
-    <BarContainer as="header">
+    <BarContainer as="header" className="flex-col sm:flex-row gap-2 sm:gap-0">
       <NavBar />
       <SearchBar
         value={searchTerm}
