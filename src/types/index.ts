@@ -8,3 +8,9 @@ export type PokemonCardData = {
     attack: number;
   };
 };
+
+export type PokemonDetailedData = PokemonCardData & {
+  weight: number;
+  height: number;
+  abilities: string[];
+};

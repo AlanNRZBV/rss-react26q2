@@ -1,10 +1,14 @@
 import axios from 'axios';
-import type { PokemonCardData } from '../types';
+import type { PokemonCardData, PokemonDetailedData } from '../types';
 import { baseApi } from './instance.ts';
 
 type RawStat = {
   stat: { name: string };
   base_stat: number;
+};
+
+type RawAbility = {
+  ability: { name: string };
 };
 
 type RawType = {
@@ -23,14 +27,39 @@ type RawSprites = {
 type PokeAPIDetails = {
   id: number;
   name: string;
+  weight: number;
+  height: number;
   sprites: RawSprites;
   types: RawType[];
   stats: RawStat[];
+  abilities: RawAbility[];
 };
 
 export type PokemonsResponse = {
   results: PokemonCardData[];
   total: number;
+};
+
+function formatDetailedPokemonData(
+  details: PokeAPIDetails
+): PokemonDetailedData {
+  return {
+    ...formatPokemonData(details),
+    weight: details.weight,
+    height: details.height,
+    abilities: details.abilities.map((a: RawAbility) => a.ability.name),
+  };
+}
+
+export const fetchPokemonById = async (
+  id: string
+): Promise<PokemonDetailedData> => {
+  try {
+    const { data } = await baseApi.get(`/${id}`);
+    return formatDetailedPokemonData(data);
+  } catch {
+    throw new Error(`Failed to load details for pokemon #${id}`);
+  }
 };
 
 function formatPokemonData(details: PokeAPIDetails): PokemonCardData {
@@ -62,7 +91,6 @@ export async function fetchPokemons(
 
     if (term) {
       const { data } = await baseApi.get(`/${term}`);
-
       return {
         results: [formatPokemonData(data)],
         total: 1,
