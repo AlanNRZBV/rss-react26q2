@@ -1,17 +1,38 @@
+import { Route } from '../../routes/_layout.tsx';
 import type { PokemonCardData } from '../../types';
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 
 type CardProps = {
   pokemon: PokemonCardData;
 };
 
 const Card: FC<CardProps> = ({ pokemon }) => {
+  const navigate = Route.useNavigate();
+
+  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+
+    navigate({
+      to: '/$pokemonId',
+      params: { pokemonId: String(pokemon.id) },
+      search: (prev) => ({
+        ...prev,
+        page: prev.page ?? 1,
+      }),
+    });
+  };
+
   if (!pokemon) {
     return null;
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm flex flex-col items-center gap-2">
+    <div
+      onClick={handleClick}
+      className="cursor-pointer rounded-lg border border-gray-200
+      bg-white p-4 shadow-sm flex flex-col items-center gap-2
+      transition-all hover:shadow-md"
+    >
       <img
         src={pokemon.imageUrl || 'https://placehold.co/64x128?text=NoImage'}
         alt={pokemon.name || ''}
@@ -24,7 +45,8 @@ const Card: FC<CardProps> = ({ pokemon }) => {
         {pokemon.types?.map((type) => (
           <span
             key={type}
-            className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 capitalize"
+            className="rounded-full bg-blue-100 px-2 py-0.5 text-xs
+            text-blue-700 capitalize"
           >
             {type}
           </span>
