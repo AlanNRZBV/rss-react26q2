@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useMatchRoute } from '@tanstack/react-router';
 import Card from '../Card/Card.tsx';
-import { fetchPokemons } from '../../api/pokemons.ts';
-import type { PokemonCardData } from '../../types';
 import Pagination from '../Pagination/Pagination.tsx';
-import { Route } from '../../routes';
-import { useNavigate } from '@tanstack/react-router';
+import { Route } from '../../routes/_layout.tsx';
+import { usePokemons } from '../../hooks/usePokemons.ts';
 
 type CardListProps = {
   searchTerm: string;
@@ -13,41 +12,29 @@ type CardListProps = {
 const LIMIT = 10;
 
 const CardList = ({ searchTerm }: CardListProps) => {
-  const [pokemons, setPokemons] = useState<PokemonCardData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
-
   const { page } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.id });
+  const { pokemons, loading, error, totalPages } = usePokemons(
+    searchTerm,
+    page,
+    LIMIT
+  );
 
-  useEffect(() => {
-    const loadPokemons = async () => {
-      setLoading(true);
-      setError(null);
+  const navigate = Route.useNavigate();
+  const matchRoute = useMatchRoute();
 
-      try {
-        const offset = (page - 1) * LIMIT;
-        const data = await fetchPokemons(searchTerm, LIMIT, offset);
-        setPokemons(data.results);
-        setTotalPages(Math.ceil(data.total / LIMIT));
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Something went wrong.';
-        setError(message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const isDetailsOpen = !!matchRoute({ to: '/$pokemonId' });
 
-    loadPokemons();
-  }, [searchTerm, page]);
-
-  const handlePageChange = (newPage: number) => {
-    navigate({
-      search: (prev) => ({ ...prev, page: newPage }),
-    });
-  };
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          page: newPage ?? 1,
+        }),
+      });
+    },
+    [navigate]
+  );
 
   if (loading) {
     return (
