@@ -1,25 +1,25 @@
-import { Component } from 'react';
 import SearchBar from '../SearchBar/SearchBar.tsx';
+import type { FC } from 'react';
+import NavBar from '../NavBar/NavBar.tsx';
+import BarContainer from '../UI/BarContainer/BarContainer.tsx';
 
-type Props = {
+type HeaderProps = {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   onSearch: () => void;
 };
 
-class Header extends Component<Props> {
-  render() {
-    const { searchTerm, onSearchChange, onSearch } = this.props;
-    return (
-      <header className="py-4 flex items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm px-6">
-        <SearchBar
-          value={searchTerm}
-          onChange={onSearchChange}
-          onSearch={onSearch}
-        />
-      </header>
-    );
-  }
-}
+const Header: FC<HeaderProps> = ({ searchTerm, onSearchChange, onSearch }) => {
+  return (
+    <BarContainer as="header" className="flex-col sm:flex-row gap-2 sm:gap-0">
+      <NavBar />
+      <SearchBar
+        value={searchTerm}
+        onChange={onSearchChange}
+        onSearch={onSearch}
+      />
+    </BarContainer>
+  );
+};
 
 export default Header;
