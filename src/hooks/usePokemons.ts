@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchPokemons } from '../api/pokemons';
-import type { PokemonCardData } from '../types';
+import type { PokemonCardData } from '../types/types';
 
 export const usePokemons = (
   searchTerm: string,

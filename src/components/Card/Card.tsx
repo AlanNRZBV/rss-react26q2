@@ -1,5 +1,5 @@
 import { Route } from '../../routes/_layout.tsx';
-import type { PokemonCardData } from '../../types';
+import type { PokemonCardData } from '../../types/types';
 import type { FC, MouseEvent } from 'react';
 
 type CardProps = {

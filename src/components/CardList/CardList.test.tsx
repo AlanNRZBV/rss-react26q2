@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CardList from './CardList';
 import { fetchPokemons } from '../../api/pokemons';
-import type { PokemonCardData } from '../../types';
+import type { PokemonCardData } from '../../types/types';
 import { mockPokemonList } from '../../test-utils/mocks/pokemonData';
 
 vi.mock('../../api/pokemons', () => ({

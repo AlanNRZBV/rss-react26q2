@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { PokemonCardData, PokemonDetailedData } from '../types';
+import type { PokemonCardData, PokemonDetailedData } from '../types/types';
 import { baseApi } from './instance.ts';
 
 type RawStat = {

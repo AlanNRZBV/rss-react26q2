@@ -1,4 +1,4 @@
-import type { PokemonCardData } from '../../types';
+import type { PokemonCardData, PokemonDetailedData } from '../../types/types';
 
 export const mockPokemon: PokemonCardData = {
   id: 25,
@@ -49,4 +49,11 @@ export const pokemonListApiResponse = {
     { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
     { name: 'venusaur', url: 'https://pokeapi.co/api/v2/pokemon/3/' },
   ],
+};
+
+export const mockPokemonDetailed: PokemonDetailedData = {
+  ...mockPokemonList[0],
+  weight: 69,
+  height: 7,
+  abilities: ['overgrow', 'chlorophyll'],
 };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchPokemonById } from '../api/pokemons.ts';
-import type { PokemonDetailedData } from '../types';
+import type { PokemonDetailedData } from '../types/types';
 
 export const usePokemonDetails = (pokemonId: string) => {
   const [pokemon, setPokemon] = useState<PokemonDetailedData | null>(null);
