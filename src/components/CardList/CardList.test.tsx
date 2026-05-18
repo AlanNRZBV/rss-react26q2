@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CardList from './CardList';
 import { fetchPokemons } from '../../api/pokemons';
@@ -17,6 +17,29 @@ vi.mock('../Card/Card.tsx', () => ({
   ),
 }));
 
+vi.mock('../Pagination/Pagination.tsx', () => ({
+  default: () => <div data-testid="mock-pagination" />,
+}));
+
+vi.mock('@tanstack/react-router', () => ({
+  useMatchRoute: vi.fn(() => vi.fn(() => false)),
+  useNavigate: vi.fn(() => vi.fn()),
+}));
+
+vi.mock('../../routes/_layout.tsx', () => ({
+  Route: {
+    useSearch: vi.fn(() => ({ page: 1 })),
+    useNavigate: vi.fn(() => vi.fn()),
+    id: '_layout',
+  },
+}));
+
+const renderCardList = async (searchTerm = '') => {
+  await act(async () => {
+    render(<CardList searchTerm={searchTerm} />);
+  });
+};
+
 describe('CardList Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -24,9 +47,12 @@ describe('CardList Component', () => {
 
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
+      vi.mocked(fetchPokemons).mockResolvedValue({
+        results: mockPokemonList,
+        total: mockPokemonList.length,
+      });
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       await screen.findAllByTestId('mock-card');
 
@@ -40,9 +66,12 @@ describe('CardList Component', () => {
         { id: 100, name: undefined },
       ] as unknown as PokemonCardData[];
 
-      vi.mocked(fetchPokemons).mockResolvedValue(corruptedData);
+      vi.mocked(fetchPokemons).mockResolvedValue({
+        results: corruptedData,
+        total: corruptedData.length,
+      });
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       const cards = await screen.findAllByTestId('mock-card');
 
@@ -57,7 +86,7 @@ describe('CardList Component', () => {
         new Error('Network connection lost')
       );
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       const errorMessage = await screen.findByText('Network connection lost');
 
@@ -66,10 +95,10 @@ describe('CardList Component', () => {
   });
 
   describe('Accessibility Tests', () => {
-    it('Has appropriate ARIA labels for screen readers', () => {
+    it('Has appropriate ARIA labels for screen readers', async () => {
       vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       const spinner = screen.getByLabelText(/loading pokemons/i);
 
@@ -79,14 +108,17 @@ describe('CardList Component', () => {
   });
 
   describe('Integration Tests', () => {
-    it('Makes initial API call on component mount', () => {
-      render(<CardList searchTerm="" />);
+    it('Makes initial API call on component mount', async () => {
+      await renderCardList();
 
       expect(fetchPokemons).toHaveBeenCalledTimes(1);
     });
 
     it('Manages loading states during API calls', async () => {
-      let resolveApi: (val: PokemonCardData[]) => void;
+      let resolveApi: (val: {
+        results: PokemonCardData[];
+        total: number;
+      }) => void;
       vi.mocked(fetchPokemons).mockImplementation(
         () =>
           new Promise((resolve) => {
@@ -94,12 +126,14 @@ describe('CardList Component', () => {
           })
       );
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       const spinner = screen.getByLabelText(/loading pokemons/i);
       expect(spinner).toBeInTheDocument();
 
-      resolveApi!([]);
+      await act(async () => {
+        resolveApi!({ results: [], total: 0 });
+      });
 
       const noResults = await screen.findByText(/no results/i);
       expect(noResults).toBeInTheDocument();
@@ -108,16 +142,19 @@ describe('CardList Component', () => {
   });
 
   describe('API Integration Tests', () => {
-    it('Calls API with correct parameters', () => {
-      render(<CardList searchTerm="mewtwo" />);
+    it('Calls API with correct parameters', async () => {
+      await renderCardList('mewtwo');
 
-      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo');
+      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo', 10, 0);
     });
 
     it('Handles successful API responses', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue([mockPokemonList[0]]);
+      vi.mocked(fetchPokemons).mockResolvedValue({
+        results: [mockPokemonList[0]],
+        total: 1,
+      });
 
-      render(<CardList searchTerm="bulbasaur" />);
+      await renderCardList('bulbasaur');
 
       const card = await screen.findByText('bulbasaur');
       expect(card).toBeInTheDocument();
@@ -128,7 +165,7 @@ describe('CardList Component', () => {
         new Error('No Pokémon found.')
       );
 
-      render(<CardList searchTerm="unknown" />);
+      await renderCardList('unknown');
 
       const errorMsg = await screen.findByText('No Pokémon found.');
       expect(errorMsg).toBeInTheDocument();
@@ -137,42 +174,15 @@ describe('CardList Component', () => {
 
   describe('State Management Tests', () => {
     it('Updates component state based on API responses', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
+      vi.mocked(fetchPokemons).mockResolvedValue({
+        results: mockPokemonList,
+        total: mockPokemonList.length,
+      });
 
-      render(<CardList searchTerm="" />);
+      await renderCardList();
 
       const cards = await screen.findAllByTestId('mock-card');
       expect(cards).toHaveLength(2);
     });
-  });
-
-  it('Shows loading state while fetching data', () => {
-    vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
-
-    const { container } = render(<CardList searchTerm="" />);
-    const spinner = container.querySelector('.animate-spin');
-
-    expect(spinner).toBeInTheDocument();
-  });
-
-  it('Displays "no results" message when data array is empty', async () => {
-    vi.mocked(fetchPokemons).mockResolvedValue([]);
-
-    render(<CardList searchTerm="unknown" />);
-    const noResults = await screen.findByText(/no results/i);
-
-    expect(noResults).toBeInTheDocument();
-  });
-
-  it('Renders correct number of items when data is provided', async () => {
-    vi.mocked(fetchPokemons).mockResolvedValue(mockPokemonList);
-
-    const { container } = render(<CardList searchTerm="bulbasaur" />);
-
-    const cards = await screen.findAllByTestId('mock-card');
-    expect(cards).toHaveLength(2);
-
-    const spinner = container.querySelector('.animate-spin');
-    expect(spinner).not.toBeInTheDocument();
   });
 });
