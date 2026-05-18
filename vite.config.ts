@@ -10,6 +10,9 @@ export default defineConfig({
       target: 'react',
       autoCodeSplitting: true,
       routeFileIgnorePattern: '.(test|spec).tsx',
+      routesDirectory: './src/routes',
+      generatedRouteTree: './src/routeTree.gen.ts',
+      disableLogging: true,
     }),
     react(),
     tailwindcss(),
@@ -18,6 +21,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
+    typecheck: { enabled: true },
+    watch: false,
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{js,jsx,ts,tsx}'],
@@ -28,7 +33,9 @@ export default defineConfig({
         'src/main.tsx',
         'src/setupTests.{js,ts}',
         'src/**/*.d.ts',
-        'src/**/*.types.ts',
+        'src/**/types.ts',
+        'src/**/*utils.tsx',
+        'src/**/$.tsx',
       ],
       thresholds: {
         global: {
