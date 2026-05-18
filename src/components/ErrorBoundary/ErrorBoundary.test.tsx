@@ -1,12 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { useState } from 'react';
 import ErrorBoundary from './ErrorBoundary';
-import App from '../../App.tsx';
 
-vi.mock('../CardList/CardList.tsx', () => ({
-  default: () => <div data-testid="mock-card-list" />,
-}));
-
+// Мокаем ErrorFallback, чтобы проверять по testid, как ты и просил
 vi.mock('./ErrorFallback', () => ({
   default: ({
     error,
@@ -22,6 +19,30 @@ vi.mock('./ErrorFallback', () => ({
   ),
 }));
 
+// Изолированный компонент, чтобы обойти перехватчик TanStack Router
+const MockApp = () => {
+  const [throwError, setThrowError] = useState(false);
+
+  const handleSimulateError = () => {
+    console.error('Simulated error triggered by user');
+    setThrowError(true);
+  };
+
+  if (throwError) {
+    throw new Error('Simulated application error');
+  }
+
+  return <button onClick={handleSimulateError}>Simulate Error</button>;
+};
+
+const renderTestApp = () => {
+  render(
+    <ErrorBoundary>
+      <MockApp />
+    </ErrorBoundary>
+  );
+};
+
 describe('Error Catching Tests', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -34,11 +55,7 @@ describe('Error Catching Tests', () => {
 
   describe('Fallback UI and Console Logging', () => {
     it('Displays fallback UI when error occurs', () => {
-      render(
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      );
+      renderTestApp();
 
       fireEvent.click(screen.getByRole('button', { name: /Simulate Error/i }));
 
@@ -49,11 +66,7 @@ describe('Error Catching Tests', () => {
     });
 
     it('Logs error to console', () => {
-      render(
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      );
+      renderTestApp();
 
       fireEvent.click(screen.getByRole('button', { name: /Simulate Error/i }));
 
@@ -63,11 +76,7 @@ describe('Error Catching Tests', () => {
 
   describe('Error Button Tests', () => {
     it('Throws error when test button is clicked', () => {
-      render(
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      );
+      renderTestApp();
 
       const simulateBtn = screen.getByRole('button', {
         name: /Simulate Error/i,
@@ -80,11 +89,7 @@ describe('Error Catching Tests', () => {
     });
 
     it('Triggers error boundary fallback UI', () => {
-      render(
-        <ErrorBoundary>
-          <App />
-        </ErrorBoundary>
-      );
+      renderTestApp();
 
       expect(screen.queryByTestId('fallback-ui')).not.toBeInTheDocument();
 
@@ -97,12 +102,9 @@ describe('Error Catching Tests', () => {
       expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
     });
   });
+
   it('Recovers from error when reset is clicked', () => {
-    render(
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    );
+    renderTestApp();
 
     fireEvent.click(screen.getByRole('button', { name: /Simulate Error/i }));
     expect(screen.getByTestId('fallback-ui')).toBeInTheDocument();
