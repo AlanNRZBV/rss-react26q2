@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutPokemonIdRouteImport } from './routes/_layout/$pokemonId'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -35,17 +41,20 @@ const LayoutPokemonIdRoute = LayoutPokemonIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/$': typeof SplatRoute
   '/': typeof LayoutIndexRoute
   '/$pokemonId': typeof LayoutPokemonIdRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/$': typeof SplatRoute
   '/$pokemonId': typeof LayoutPokemonIdRoute
   '/': typeof LayoutIndexRoute
   '/about': typeof AboutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/$': typeof SplatRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/$pokemonId': typeof LayoutPokemonIdRoute
   '/_layout/': typeof LayoutIndexRoute
@@ -53,13 +62,20 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$pokemonId' | '/about/'
+  fullPaths: '/$' | '/' | '/$pokemonId' | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$pokemonId' | '/' | '/about'
-  id: '__root__' | '/_layout' | '/_layout/$pokemonId' | '/_layout/' | '/about/'
+  to: '/$' | '/$pokemonId' | '/' | '/about'
+  id:
+    | '__root__'
+    | '/$'
+    | '/_layout'
+    | '/_layout/$pokemonId'
+    | '/_layout/'
+    | '/about/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  SplatRoute: typeof SplatRoute
   LayoutRoute: typeof LayoutRouteWithChildren
   AboutIndexRoute: typeof AboutIndexRoute
 }
@@ -71,6 +87,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof LayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -111,6 +134,7 @@ const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  SplatRoute: SplatRoute,
   LayoutRoute: LayoutRouteWithChildren,
   AboutIndexRoute: AboutIndexRoute,
 }
