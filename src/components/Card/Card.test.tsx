@@ -1,8 +1,16 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import Card from './Card';
-import type { PokemonCardData } from '../../types';
+import type { PokemonCardData } from '../../types/types';
 import { mockPokemon } from '../../test-utils/mocks/pokemonData';
+
+const mockNavigate = vi.fn();
+vi.mock('../../routes/_layout.tsx', () => ({
+  Route: {
+    useNavigate: vi.fn(() => mockNavigate),
+    useSearch: vi.fn(() => ({ page: 1 })),
+  },
+}));
 
 const corruptedPokemon: { id: number; name: string } = {
   id: 99,
@@ -24,6 +32,7 @@ describe('Card Component', () => {
     expect(imageElement).toBeInTheDocument();
     expect(imageElement).toHaveAttribute('src', mockPokemon.imageUrl);
   });
+
   it('Handles missing props gracefully (renders fallbacks)', () => {
     render(<Card pokemon={corruptedPokemon as unknown as PokemonCardData} />);
 
@@ -42,6 +51,14 @@ describe('Card Component', () => {
       <Card pokemon={null as unknown as PokemonCardData} />
     );
 
-    expect(container).toBeEmptyDOMElement();
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('navigates to details on click', () => {
+    render(<Card pokemon={mockPokemon} />);
+    const card = screen.getByText(/pikachu/i).closest('div');
+    fireEvent.click(card!);
+
+    expect(mockNavigate).toHaveBeenCalled();
   });
 });
