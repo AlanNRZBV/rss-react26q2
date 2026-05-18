@@ -8,7 +8,7 @@ import CustomButton from '../components/UI/CustomButton/CustomButton.tsx';
 
 export const Route = createFileRoute('/_layout')({
   component: RouteComponent,
-  validateSearch: (search) => {
+  validateSearch: (search: Record<string, unknown>) => {
     return {
       page: Number(search?.page) || 1,
     };
@@ -21,7 +21,6 @@ function RouteComponent() {
     STORAGE_KEY,
     ''
   );
-
   const [searchTerm, setSearchTerm] = useState(activeSearchTerm);
 
   const matchRoute = useMatchRoute();
@@ -61,10 +60,12 @@ function RouteComponent() {
         >
           <CardList searchTerm={activeSearchTerm} />
         </div>
+
         {isDetailsOpen && (
           <aside
-            className="w-full lg:w-1/3 rounded-2xl border border-gray-200
-            bg-gray-50 shadow-sm p-6 overflow-y-auto
+            className="w-full lg:w-1/3 rounded-2xl
+            border border-gray-200 bg-gray-50
+            shadow-sm p-6 overflow-y-auto
             max-h-[calc(100vh-2rem)] sticky top-4"
           >
             <Outlet />
