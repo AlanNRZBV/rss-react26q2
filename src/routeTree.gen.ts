@@ -8,136 +8,136 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as LayoutRouteImport } from './routes/_layout';
-import { Route as SplatRouteImport } from './routes/$';
-import { Route as AboutIndexRouteImport } from './routes/about/index';
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index';
-import { Route as LayoutPokemonIdRouteImport } from './routes/_layout/$pokemonId';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
+import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as LayoutPokemonIdRouteImport } from './routes/_layout/$pokemonId'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
   id: '/about/',
   path: '/about/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutRoute,
-} as any);
+} as any)
 const LayoutPokemonIdRoute = LayoutPokemonIdRouteImport.update({
   id: '/$pokemonId',
   path: '/$pokemonId',
   getParentRoute: () => LayoutRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/$': typeof SplatRoute;
-  '/': typeof LayoutIndexRoute;
-  '/$pokemonId': typeof LayoutPokemonIdRoute;
-  '/about/': typeof AboutIndexRoute;
+  '/$': typeof SplatRoute
+  '/': typeof LayoutIndexRoute
+  '/$pokemonId': typeof LayoutPokemonIdRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
-  '/$': typeof SplatRoute;
-  '/$pokemonId': typeof LayoutPokemonIdRoute;
-  '/': typeof LayoutIndexRoute;
-  '/about': typeof AboutIndexRoute;
+  '/$': typeof SplatRoute
+  '/$pokemonId': typeof LayoutPokemonIdRoute
+  '/': typeof LayoutIndexRoute
+  '/about': typeof AboutIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/$': typeof SplatRoute;
-  '/_layout': typeof LayoutRouteWithChildren;
-  '/_layout/$pokemonId': typeof LayoutPokemonIdRoute;
-  '/_layout/': typeof LayoutIndexRoute;
-  '/about/': typeof AboutIndexRoute;
+  __root__: typeof rootRouteImport
+  '/$': typeof SplatRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/$pokemonId': typeof LayoutPokemonIdRoute
+  '/_layout/': typeof LayoutIndexRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/$' | '/' | '/$pokemonId' | '/about/';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/$' | '/$pokemonId' | '/' | '/about';
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/$' | '/' | '/$pokemonId' | '/about/'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/$' | '/$pokemonId' | '/' | '/about'
   id:
     | '__root__'
     | '/$'
     | '/_layout'
     | '/_layout/$pokemonId'
     | '/_layout/'
-    | '/about/';
-  fileRoutesById: FileRoutesById;
+    | '/about/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  SplatRoute: typeof SplatRoute;
-  LayoutRoute: typeof LayoutRouteWithChildren;
-  AboutIndexRoute: typeof AboutIndexRoute;
+  SplatRoute: typeof SplatRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
+  AboutIndexRoute: typeof AboutIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/_layout': {
-      id: '/_layout';
-      path: '';
-      fullPath: '/';
-      preLoaderRoute: typeof LayoutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/_layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$': {
-      id: '/$';
-      path: '/$';
-      fullPath: '/$';
-      preLoaderRoute: typeof SplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about/': {
-      id: '/about/';
-      path: '/about';
-      fullPath: '/about/';
-      preLoaderRoute: typeof AboutIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout/': {
-      id: '/_layout/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof LayoutIndexRouteImport;
-      parentRoute: typeof LayoutRoute;
-    };
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/$pokemonId': {
-      id: '/_layout/$pokemonId';
-      path: '/$pokemonId';
-      fullPath: '/$pokemonId';
-      preLoaderRoute: typeof LayoutPokemonIdRouteImport;
-      parentRoute: typeof LayoutRoute;
-    };
+      id: '/_layout/$pokemonId'
+      path: '/$pokemonId'
+      fullPath: '/$pokemonId'
+      preLoaderRoute: typeof LayoutPokemonIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
-  LayoutPokemonIdRoute: typeof LayoutPokemonIdRoute;
-  LayoutIndexRoute: typeof LayoutIndexRoute;
+  LayoutPokemonIdRoute: typeof LayoutPokemonIdRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutPokemonIdRoute: LayoutPokemonIdRoute,
   LayoutIndexRoute: LayoutIndexRoute,
-};
+}
 
 const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren);
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   LayoutRoute: LayoutRouteWithChildren,
   AboutIndexRoute: AboutIndexRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
