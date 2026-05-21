@@ -4,7 +4,7 @@ type LayoutProps = PropsWithChildren;
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full bg-gray-50 dark:bg-gray-950">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-4 py-4 h-full">
         {children}
       </div>

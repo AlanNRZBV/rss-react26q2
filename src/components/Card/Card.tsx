@@ -31,14 +31,14 @@ const Card: FC<CardProps> = ({ pokemon }) => {
       onClick={handleClick}
       className="cursor-pointer rounded-lg border border-gray-200
       bg-white p-4 shadow-sm flex flex-col items-center gap-2
-      transition-all hover:shadow-md"
+      transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700 dark:hover:shadow-gray-800/25"
     >
       <img
         src={pokemon.imageUrl || 'https://placehold.co/64x128?text=NoImage'}
         alt={pokemon.name || ''}
         className="h-24 w-24 object-contain"
       />
-      <h3 className="capitalize font-semibold text-gray-800">
+      <h3 className="capitalize font-semibold text-gray-800 dark:text-white">
         {pokemon.name || 'N/A'}
       </h3>
       <div className="flex gap-1 flex-wrap justify-center">
@@ -46,13 +46,13 @@ const Card: FC<CardProps> = ({ pokemon }) => {
           <span
             key={type}
             className="rounded-full bg-blue-100 px-2 py-0.5 text-xs
-            text-blue-700 capitalize"
+            text-blue-700 capitalize dark:bg-blue-800/20 dark:text-blue-300"
           >
             {type}
           </span>
         ))}
       </div>
-      <div className="text-sm text-gray-600 w-full mt-auto">
+      <div className="text-sm text-gray-600 w-full mt-auto dark:text-gray-400">
         <p>HP: {pokemon.stats?.hp ?? 'N/A'}</p>
         <p>Attack: {pokemon.stats?.attack ?? 'N/A'}</p>
       </div>

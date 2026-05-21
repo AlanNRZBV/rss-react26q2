@@ -60,13 +60,12 @@ function RouteComponent() {
         >
           <CardList searchTerm={activeSearchTerm} />
         </div>
-
         {isDetailsOpen && (
           <aside
             className="w-full lg:w-1/3 rounded-2xl
             border border-gray-200 bg-gray-50
-            shadow-sm p-6 overflow-y-auto
-            max-h-[calc(100vh-2rem)] sticky top-4"
+            shadow-sm p-6
+             top-4 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700 dark:hover:shadow-gray-800/25"
           >
             <Outlet />
           </aside>
