@@ -1,15 +1,51 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Route as LayoutRoute } from '../../routes/_layout.tsx';
 import { usePokemonDetails } from '../../hooks/usePokemonDetails.ts';
+import type { PokemonDetailedData } from '../../types/types.ts';
 
 export const Route = createFileRoute('/_layout/$pokemonId')({
   component: RouteComponent,
 });
 
+const MEASUREMENTS_CONFIG = [
+  {
+    label: 'Weight',
+    getValue: (p: PokemonDetailedData) => `${(p.weight || 0) / 10} kg`,
+    hasBorder: true,
+  },
+  {
+    label: 'Height',
+    getValue: (p: PokemonDetailedData) => `${(p.height || 0) / 10} m`,
+    hasBorder: false,
+  },
+];
+
+const BADGES_CONFIG = [
+  {
+    title: 'Types',
+    getItems: (p: PokemonDetailedData) => p.types || [],
+    colorClass: `bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 
+      dark:text-indigo-300`,
+  },
+  {
+    title: 'Abilities',
+    getItems: (p: PokemonDetailedData) => p.abilities || [],
+    colorClass: `bg-green-50 text-green-700 border border-green-200 
+      dark:bg-green-900/30 dark:text-green-300 dark:border-green-800`,
+  },
+];
+
+const STATS_CONFIG = [
+  { label: 'HP', getValue: (p: PokemonDetailedData) => p.stats?.hp ?? 'N/A' },
+  {
+    label: 'Attack',
+    getValue: (p: PokemonDetailedData) => p.stats?.attack ?? 'N/A',
+  },
+];
+
 function RouteComponent() {
   const { pokemonId } = Route.useParams();
   const navigate = LayoutRoute.useNavigate();
-
   const { pokemon, loading, error } = usePokemonDetails(pokemonId);
 
   const handleClose = () => {
@@ -73,50 +109,45 @@ function RouteComponent() {
           className="flex justify-between rounded-lg bg-white p-3 border
           border-gray-100 shadow-sm"
         >
-          <div className="text-center w-1/2 border-r border-gray-100">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Weight
-            </p>
-            <p className="font-medium text-gray-800">
-              {pokemon.weight / 10} kg
-            </p>
-          </div>
-          <div className="text-center w-1/2">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">
-              Height
-            </p>
-            <p className="font-medium text-gray-800">{pokemon.height / 10} m</p>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-semibold text-gray-700">Types</h3>
-          <div className="flex gap-2 mt-1">
-            {pokemon.types?.map((type) => (
-              <span
-                key={type}
-                className="rounded-full bg-indigo-100 px-3 py-1
-                text-sm text-indigo-700 capitalize"
+          {MEASUREMENTS_CONFIG.map((item) => (
+            <div
+              key={item.label}
+              className={`text-center w-1/2 ${
+                item.hasBorder
+                  ? 'border-r border-gray-100 dark:border-gray-700'
+                  : ''
+              }`}
+            >
+              <p
+                className="text-xs text-gray-500 uppercase tracking-wider
+                dark:text-gray-400"
               >
-                {type}
-              </span>
-            ))}
-          </div>
+                {item.label}
+              </p>
+              <p className="font-medium text-gray-800 dark:text-gray-200">
+                {item.getValue(pokemon)}
+              </p>
+            </div>
+          ))}
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-700">Abilities</h3>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {pokemon.abilities?.map((ability) => (
-              <span
-                key={ability}
-                className="rounded bg-green-50 px-2 py-1 text-xs
-                text-green-700 capitalize border border-green-200"
-              >
-                {ability}
-              </span>
-            ))}
+        {BADGES_CONFIG.map((section) => (
+          <div key={section.title}>
+            <h3 className="font-semibold text-gray-700 dark:text-gray-300">
+              {section.title}
+            </h3>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {section.getItems(pokemon).map((badgeText) => (
+                <span
+                  key={badgeText}
+                  className={`rounded-full px-3 py-1 text-xs capitalize 
+                  ${section.colorClass}`}
+                >
+                  {badgeText}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
         <div>
           <h3 className="font-semibold text-gray-700">Base Stats</h3>
           <ul className="mt-1 space-y-1 text-gray-600">
@@ -128,6 +159,16 @@ function RouteComponent() {
               <span>Attack</span>
               <span className="font-medium">{pokemon.stats.attack}</span>
             </li>
+          <ul className="mt-1 space-y-1 text-gray-600 dark:text-gray-400">
+            {STATS_CONFIG.map((stat) => (
+              <li
+                key={stat.label}
+                className="flex justify-between dark:text-gray-200"
+              >
+                <span>{stat.label}</span>
+                <span className="font-medium">{stat.getValue(pokemon)}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
