@@ -38,39 +38,36 @@ const CardList = ({ searchTerm }: CardListProps) => {
 
   if (loading) {
     return (
-      <main
-        className="flex justify-center items-center py-16 rounded-2xl
-        border border-gray-200 bg-white shadow-sm"
-      >
+      <div className="flex justify-center items-center">
         <div
           role="status"
           aria-label="Loading pokemons"
           className="h-10 w-10 animate-spin rounded-full border-4
           border-blue-500 border-t-transparent"
         />
-      </main>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <main
+      <div
         className="py-8 text-center text-red-600 rounded-2xl border
         border-gray-200 bg-white shadow-sm"
       >
         <p>{error}</p>
-      </main>
+      </div>
     );
   }
 
   if (pokemons.length === 0) {
     return (
-      <main
+      <div
         className="py-16 text-center rounded-2xl border border-gray-200
         bg-white shadow-sm"
       >
         <p className="text-gray-500 font-medium">No results</p>
-      </main>
+      </div>
     );
   }
 
