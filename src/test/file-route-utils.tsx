@@ -6,6 +6,7 @@ import {
   createMemoryHistory,
 } from '@tanstack/react-router';
 import { routeTree } from '../routeTree.gen';
+import { ThemeProvider } from '../context/ThemeContext.tsx';
 
 export { createMockFileRoute } from './mock-route-utils';
 
@@ -34,7 +35,12 @@ export async function renderWithFileRoutes(
 
   await act(async () => {
     await router.load();
-    result = render(<RouterProvider router={router} />, renderOptions);
+    result = render(
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>,
+      renderOptions
+    );
   });
 
   return { ...result, router };

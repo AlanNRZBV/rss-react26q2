@@ -2,6 +2,7 @@ import SearchBar from '../SearchBar/SearchBar.tsx';
 import type { FC } from 'react';
 import NavBar from '../NavBar/NavBar.tsx';
 import BarContainer from '../UI/BarContainer/BarContainer.tsx';
+import ThemeSwitch from '../ThemeSwitch/ThemeSwitch.tsx';
 
 type HeaderProps = {
   searchTerm: string;
@@ -18,6 +19,7 @@ const Header: FC<HeaderProps> = ({ searchTerm, onSearchChange, onSearch }) => {
         onChange={onSearchChange}
         onSearch={onSearch}
       />
+      <ThemeSwitch />
     </BarContainer>
   );
 };

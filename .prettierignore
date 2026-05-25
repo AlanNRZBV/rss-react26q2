@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 coverage
 .junie
-.tanstack
+.tanstack/src/routeTree.gen.ts

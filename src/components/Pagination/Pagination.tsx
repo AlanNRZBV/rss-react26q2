@@ -19,7 +19,8 @@ const PaginationButton: FC<PaginationButtonProps> = ({
       disabled={disabled}
       className="grid size-8 place-content-center rounded border
       border-gray-200 transition-colors hover:bg-gray-50 rtl:rotate-180
-      disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300
+      dark:hover:bg-gray-800 dark:hover:text-white"
       aria-label={ariaLabel}
     >
       {children}
@@ -42,7 +43,7 @@ const PaginationItem: FC<PaginationItemProps> = ({
     return (
       <li
         className="block size-8 rounded border border-indigo-600
-        bg-indigo-600 text-center text-sm/8 font-medium text-white"
+        bg-indigo-600 text-center text-sm/8 font-medium text-white dark:border-indigo-500 dark:bg-indigo-500"
       >
         {page}
       </li>
@@ -54,7 +55,8 @@ const PaginationItem: FC<PaginationItemProps> = ({
       <button
         onClick={() => onClick(page)}
         className="block size-8 rounded border border-gray-200 text-center
-        text-sm/8 font-medium transition-colors hover:bg-gray-50"
+        text-sm/8 font-medium transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300
+        dark:hover:bg-gray-800 dark:hover:text-white"
       >
         {page}
       </button>
@@ -105,7 +107,7 @@ const Pagination: FC<PaginationProps> = ({
   };
 
   return (
-    <ul className="flex justify-center gap-1 text-gray-900 mt-8">
+    <ul className="flex justify-center gap-1 text-gray-900 mt-8 mb-12">
       <PaginationButton
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage <= 1}

@@ -8,14 +8,17 @@ type ErrorFallbackProps = {
 
 const ErrorFallback: FC<ErrorFallbackProps> = ({ error, resetError }) => {
   return (
-    <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center dark:bg-gray-950">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-lg rounded-lg border border-red-200 bg-white p-8 shadow-sm">
+        <div
+          className="mx-auto max-w-lg rounded-lg border border-red-200 bg-white p-8 shadow-sm dark:bg-gray-900 dark:border-red-900/30
+          dark:shadow-none"
+        >
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-red-600"
+                className="h-5 w-5 text-red-600 dark:text-red-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -28,12 +31,12 @@ const ErrorFallback: FC<ErrorFallbackProps> = ({ error, resetError }) => {
                 />
               </svg>
             </span>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
               Something went wrong
             </h2>
           </div>
 
-          <p className="mt-4 text-sm text-gray-600 leading-relaxed">
+          <p className="mt-4 text-sm text-gray-600 leading-relaxed dark:text-gray-400">
             {error.message || 'An unexpected error occurred. Please try again.'}
           </p>
 
