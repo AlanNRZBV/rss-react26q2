@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Route as LayoutRoute } from '../../routes/_layout.tsx';
 import { usePokemonDetails } from '../../hooks/usePokemonDetails.ts';
 import type { PokemonDetailedData } from '../../types/types.ts';
+import { usePokemonActions, useSelectedDetails } from '../../store/store.ts';
 
 export const Route = createFileRoute('/_layout/$pokemonId')({
   component: RouteComponent,
@@ -48,6 +49,9 @@ function RouteComponent() {
   const navigate = LayoutRoute.useNavigate();
   const { pokemon, loading, error } = usePokemonDetails(pokemonId);
 
+  const selectedDetails = useSelectedDetails();
+  const { toggleDetails } = usePokemonActions();
+
   const handleClose = () => {
     navigate({
       to: '/',
@@ -78,15 +82,40 @@ function RouteComponent() {
     );
   }
 
+  const parsedId = String(pokemon.id);
+  const isSelected = selectedDetails === parsedId;
+
   return (
-    <div className="sticky top-4 flex flex-col gap-4 p-6">
+    <div
+      className={`sticky top-4 flex flex-col gap-4 p-6 bg-white rounded-2xl border 
+      transition-all duration-300 hover:shadow-md 
+      dark:bg-gray-900 dark:hover:shadow-gray-800/25 ${
+        isSelected
+          ? 'border-indigo-500 ring-1 ring-indigo-500 dark:border-indigo-400 dark:ring-indigo-400'
+          : ''
+      }`}
+    >
       <div className="flex justify-between items-start">
-        <h2
-          className="text-2xl font-bold capitalize text-gray-900
-          dark:text-white"
-        >
-          {pokemon.name}
-        </h2>
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id={`detail-checkbox-${pokemon.id}`}
+            checked={isSelected}
+            onChange={() => toggleDetails(parsedId)}
+            className="size-5 rounded border-gray-300 text-indigo-600
+            focus:ring-indigo-600 dark:border-gray-700 dark:bg-gray-900
+            dark:ring-offset-gray-900 dark:checked:bg-indigo-500
+            dark:checked:border-indigo-500 cursor-pointer transition-all"
+          />
+          <label
+            htmlFor={`detail-checkbox-${pokemon.id}`}
+            className="text-2xl font-bold capitalize text-gray-900
+            dark:text-white cursor-pointer hover:text-indigo-600
+            dark:hover:text-indigo-400 transition-colors"
+          >
+            {pokemon.name}
+          </label>
+        </div>
         <button
           onClick={handleClose}
           className="text-gray-400 hover:text-gray-900 transition-colors
