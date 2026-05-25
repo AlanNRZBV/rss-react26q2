@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import BarContainer from '../UI/BarContainer/BarContainer.tsx';
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
 import {
@@ -8,7 +7,7 @@ import {
 } from '../../store/store.ts';
 import { useCsvDownload } from '../../hooks/useCsvDownload.ts';
 
-const SelectionFlyout: FC = () => {
+const SelectionFlyout = () => {
   const selectedPokemons = useSelectedPokemons();
   const selectedDetails = useSelectedDetails();
   const { clearPokemons, clearDetails } = usePokemonActions();
