@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useMatchRoute } from '@tanstack/react-router';
 import Card from '../Card/Card.tsx';
 import Pagination from '../Pagination/Pagination.tsx';
@@ -24,17 +23,14 @@ const CardList = ({ searchTerm }: CardListProps) => {
 
   const isDetailsOpen = !!matchRoute({ to: '/$pokemonId' });
 
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          page: newPage ?? 1,
-        }),
-      });
-    },
-    [navigate]
-  );
+  const handlePageChange = (newPage: number) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: newPage ?? 1,
+      }),
+    });
+  };
 
   if (loading) {
     return (
