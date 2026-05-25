@@ -1,13 +1,14 @@
 import { create } from 'zustand/react';
+import type { PokemonCardData, PokemonDetailedData } from '../types/types.ts';
 
 type PokemonStoreState = {
-  selectedPokemons: string[];
-  selectedDetails: string | null;
+  selectedPokemons: PokemonCardData[];
+  selectedDetails: PokemonDetailedData | null;
   actions: {
     clearPokemons: () => void;
     clearDetails: () => void;
-    togglePokemons: (id: string) => void;
-    toggleDetails: (id: string) => void;
+    togglePokemons: (pokemon: PokemonCardData) => void;
+    toggleDetails: (pokemon: PokemonDetailedData) => void;
   };
 };
 
@@ -17,18 +18,21 @@ export const usePokemonStore = create<PokemonStoreState>()((set) => ({
   actions: {
     clearPokemons: () => set({ selectedPokemons: [] }),
     clearDetails: () => set({ selectedDetails: null }),
-    togglePokemons: (id: string) =>
+    togglePokemons: (pokemon) =>
       set((state) => {
-        const isSelected = state.selectedPokemons.includes(id);
+        const isSelected = state.selectedPokemons.some(
+          (p) => p.id === pokemon.id
+        );
         return {
           selectedPokemons: isSelected
-            ? state.selectedPokemons.filter((newId) => newId !== id)
-            : [...state.selectedPokemons, id],
+            ? state.selectedPokemons.filter((p) => p.id !== pokemon.id)
+            : [...state.selectedPokemons, pokemon],
         };
       }),
-    toggleDetails: (id) =>
+    toggleDetails: (pokemon) =>
       set((state) => ({
-        selectedDetails: state.selectedDetails === id ? null : id,
+        selectedDetails:
+          state.selectedDetails?.id === pokemon.id ? null : pokemon,
       })),
   },
 }));

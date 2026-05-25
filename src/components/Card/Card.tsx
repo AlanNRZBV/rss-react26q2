@@ -9,11 +9,10 @@ type CardProps = {
 
 const Card: FC<CardProps> = ({ pokemon }) => {
   const navigate = Route.useNavigate();
-  const parsedId = String(pokemon.id);
-
   const selectedPokemons = useSelectedPokemons();
   const { togglePokemons } = usePokemonActions();
-  const isSelected = selectedPokemons.includes(parsedId);
+
+  const isSelected = selectedPokemons.some((p) => p.id === pokemon.id);
 
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -57,7 +56,7 @@ const Card: FC<CardProps> = ({ pokemon }) => {
               type="checkbox"
               id={`checkbox-${pokemon.id}`}
               checked={isSelected}
-              onChange={() => togglePokemons(parsedId)}
+              onChange={() => togglePokemons(pokemon)}
               className="size-4 rounded border-gray-300 text-indigo-600
               focus:ring-indigo-600 dark:border-gray-700 dark:bg-gray-900
               dark:ring-offset-gray-900 dark:checked:bg-indigo-500

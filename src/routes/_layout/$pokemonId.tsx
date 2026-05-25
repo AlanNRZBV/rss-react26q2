@@ -82,8 +82,7 @@ function RouteComponent() {
     );
   }
 
-  const parsedId = String(pokemon.id);
-  const isSelected = selectedDetails === parsedId;
+  const isSelected = selectedDetails?.id === pokemon.id;
 
   return (
     <div
@@ -101,7 +100,7 @@ function RouteComponent() {
             type="checkbox"
             id={`detail-checkbox-${pokemon.id}`}
             checked={isSelected}
-            onChange={() => toggleDetails(parsedId)}
+            onChange={() => toggleDetails(pokemon)}
             className="size-5 rounded border-gray-300 text-indigo-600
             focus:ring-indigo-600 dark:border-gray-700 dark:bg-gray-900
             dark:ring-offset-gray-900 dark:checked:bg-indigo-500
