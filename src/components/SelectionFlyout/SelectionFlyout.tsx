@@ -6,17 +6,27 @@ import {
   useSelectedDetails,
   useSelectedPokemons,
 } from '../../store/store.ts';
+import { useCsvDownload } from '../../hooks/useCsvDownload.ts';
 
 const SelectionFlyout: FC = () => {
   const selectedPokemons = useSelectedPokemons();
-  const selectedDetail = useSelectedDetails();
+  const selectedDetails = useSelectedDetails();
   const { clearPokemons, clearDetails } = usePokemonActions();
+  const { downloadCsv } = useCsvDownload();
 
-  if (selectedPokemons.length === 0 && !selectedDetail) return null;
+  if (selectedPokemons.length === 0 && !selectedDetails) return null;
 
   const handleClearAll = () => {
     clearPokemons();
     clearDetails();
+  };
+
+  const handleDownload = () => {
+    const dataToDownload = [
+      ...selectedPokemons,
+      ...(selectedDetails ? [selectedDetails] : []),
+    ];
+    downloadCsv(dataToDownload);
   };
 
   return (
@@ -67,13 +77,13 @@ const SelectionFlyout: FC = () => {
               </span>
             </button>
           )}
-          {selectedPokemons.length > 0 && selectedDetail && (
+          {selectedPokemons.length > 0 && selectedDetails && (
             <div
               className="hidden h-6 w-px bg-gray-200 dark:bg-gray-700
             sm:block"
             />
           )}
-          {selectedDetail && (
+          {selectedDetails && (
             <button
               onClick={clearDetails}
               className="group flex items-center gap-2 rounded-full
@@ -126,7 +136,7 @@ const SelectionFlyout: FC = () => {
           >
             Unselect all
           </CustomButton>
-          <CustomButton>Download</CustomButton>
+          <CustomButton onClick={handleDownload}>Download</CustomButton>
         </div>
       </BarContainer>
     </div>
