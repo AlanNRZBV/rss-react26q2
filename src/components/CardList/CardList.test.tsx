@@ -145,7 +145,7 @@ describe('CardList Component', () => {
     it('Calls API with correct parameters', async () => {
       await renderCardList('mewtwo');
 
-      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo', 10, 0);
+      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo', 25, 0);
     });
 
     it('Handles successful API responses', async () => {
