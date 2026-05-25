@@ -5,6 +5,7 @@ import { STORAGE_KEY } from '../lib/constants.ts';
 import Header from '../components/Header/Header.tsx';
 import CardList from '../components/CardList/CardList.tsx';
 import CustomButton from '../components/UI/CustomButton/CustomButton.tsx';
+import SelectionFlyout from '../components/SelectionFlyout/SelectionFlyout.tsx';
 
 export const Route = createFileRoute('/_layout')({
   component: RouteComponent,
@@ -61,15 +62,11 @@ function RouteComponent() {
           <CardList searchTerm={activeSearchTerm} />
         </div>
         {isDetailsOpen && (
-          <aside
-            className="w-full lg:w-1/3 rounded-2xl
-            border border-gray-200 bg-gray-50
-            shadow-sm p-6
-             top-4 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700 dark:hover:shadow-gray-800/25"
-          >
+          <aside className="w-full lg:w-1/3 top-4">
             <Outlet />
           </aside>
         )}
+        <SelectionFlyout />
       </main>
       <CustomButton
         onClick={handleSimulateError}
