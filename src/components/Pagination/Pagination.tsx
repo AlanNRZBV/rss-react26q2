@@ -107,7 +107,7 @@ const Pagination: FC<PaginationProps> = ({
   };
 
   return (
-    <ul className="flex justify-center gap-1 text-gray-900 mt-8">
+    <ul className="flex justify-center gap-1 text-gray-900 mt-8 mb-12">
       <PaginationButton
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage <= 1}

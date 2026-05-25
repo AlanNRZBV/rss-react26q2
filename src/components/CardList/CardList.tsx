@@ -8,7 +8,7 @@ type CardListProps = {
   searchTerm: string;
 };
 
-const LIMIT = 10;
+const LIMIT = 25;
 
 const CardList = ({ searchTerm }: CardListProps) => {
   const { page } = Route.useSearch();
@@ -70,7 +70,7 @@ const CardList = ({ searchTerm }: CardListProps) => {
   return (
     <div className="flex flex-col gap-6">
       <div
-        className={`grid gap-2 lg:gap-4 transition-all duration-300
+        className={`grid gap-2 lg:gap-4
         ${
           isDetailsOpen
             ? 'grid-cols-1 sm:grid-cols-1 lg:grid-cols-3'
@@ -81,7 +81,6 @@ const CardList = ({ searchTerm }: CardListProps) => {
           <Card key={pokemon.id} pokemon={pokemon} />
         ))}
       </div>
-
       <Pagination
         currentPage={page}
         totalPages={totalPages}
