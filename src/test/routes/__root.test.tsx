@@ -2,10 +2,12 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { renderWithFileRoutes } from '../file-route-utils';
 
-vi.mock('../../api/queries.ts', () => ({
-  getPokemonsQueryOptions: vi.fn(() => ({
-    queryKey: ['pokemons'],
-    queryFn: () => Promise.resolve({ results: [], total: 0 }),
+vi.mock('../../hooks/usePokemons', () => ({
+  usePokemons: vi.fn(() => ({
+    data: { results: [], total: 0 },
+    isPending: false,
+    isError: false,
+    error: null,
   })),
 }));
 

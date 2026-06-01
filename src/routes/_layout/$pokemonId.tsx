@@ -2,8 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Route as LayoutRoute } from '../../routes/_layout.tsx';
 import type { PokemonDetailedData } from '../../types/types.ts';
 import { usePokemonActions, useSelectedDetails } from '../../store/store.ts';
-import { getPokemonDetailsQueryOptions } from '../../api/queries.ts';
-import { useQuery } from '@tanstack/react-query';
+import { usePokemonDetails } from '../../hooks/usePokemonDetails.ts';
 
 export const Route = createFileRoute('/_layout/$pokemonId')({
   component: RouteComponent,
@@ -48,9 +47,7 @@ const STATS_CONFIG = [
 function RouteComponent() {
   const { pokemonId } = Route.useParams();
   const navigate = LayoutRoute.useNavigate();
-  const { data: pokemon, isPending } = useQuery(
-    getPokemonDetailsQueryOptions(pokemonId)
-  );
+  const { data: pokemon, isPending } = usePokemonDetails(pokemonId);
 
   const selectedDetails = useSelectedDetails();
   const { toggleDetails } = usePokemonActions();

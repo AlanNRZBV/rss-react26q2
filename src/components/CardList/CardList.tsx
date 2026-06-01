@@ -2,8 +2,7 @@ import { useMatchRoute } from '@tanstack/react-router';
 import Card from '../Card/Card.tsx';
 import Pagination from '../Pagination/Pagination.tsx';
 import { Route } from '../../routes/_layout.tsx';
-import { getPokemonsQueryOptions } from '../../api/queries.ts';
-import { useQuery } from '@tanstack/react-query';
+import { usePokemons } from '../../hooks/usePokemons.ts';
 import LocalError from '../LocalError/LocalError.tsx';
 
 type CardListProps = {
@@ -14,8 +13,10 @@ const LIMIT = 25;
 
 const CardList = ({ searchTerm }: CardListProps) => {
   const { page } = Route.useSearch();
-  const { data, isPending, isError, error } = useQuery(
-    getPokemonsQueryOptions(searchTerm, page, LIMIT)
+  const { data, isPending, isError, error } = usePokemons(
+    searchTerm,
+    page,
+    LIMIT
   );
 
   const navigate = Route.useNavigate();

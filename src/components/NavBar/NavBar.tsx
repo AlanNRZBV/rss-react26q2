@@ -1,7 +1,7 @@
 import CustomLink from '../UI/CustomLink/CustomLink.tsx';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
-import { getPokemonsQueryOptions } from '../../api/queries.ts';
+import { getPokemonsQueryOptions } from '../../hooks/usePokemons.ts';
 
 const NavBar = () => {
   const queryClient = useQueryClient();
