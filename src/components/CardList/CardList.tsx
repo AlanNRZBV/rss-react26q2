@@ -4,6 +4,7 @@ import Pagination from '../Pagination/Pagination.tsx';
 import { Route } from '../../routes/_layout.tsx';
 import { getPokemonsQueryOptions } from '../../api/queries.ts';
 import { useQuery } from '@tanstack/react-query';
+import LocalError from '../LocalError/LocalError.tsx';
 
 type CardListProps = {
   searchTerm: string;
@@ -13,7 +14,6 @@ const LIMIT = 25;
 
 const CardList = ({ searchTerm }: CardListProps) => {
   const { page } = Route.useSearch();
-
   const { data, isPending, isError, error } = useQuery(
     getPokemonsQueryOptions(searchTerm, page, LIMIT)
   );
@@ -45,29 +45,11 @@ const CardList = ({ searchTerm }: CardListProps) => {
     );
   }
 
-  if (isError) {
-    return (
-      <div
-        className="py-8 text-center text-red-600 rounded-2xl border
-        border-gray-200 bg-white shadow-sm"
-      >
-        <p>{error.message}</p>
-      </div>
-    );
-  }
-
   const pokemons = data?.results || [];
   const totalPages = data?.total || 0;
 
-  if (pokemons.length === 0) {
-    return (
-      <div
-        className="py-16 text-center rounded-2xl border border-gray-200
-        bg-white shadow-sm"
-      >
-        <p className="text-gray-500 font-medium">No results</p>
-      </div>
-    );
+  if (isError && error) {
+    return <LocalError error={error} />;
   }
 
   return (

@@ -48,12 +48,9 @@ const STATS_CONFIG = [
 function RouteComponent() {
   const { pokemonId } = Route.useParams();
   const navigate = LayoutRoute.useNavigate();
-  const {
-    data: pokemon,
-    isPending,
-    isError,
-    error,
-  } = useQuery(getPokemonDetailsQueryOptions(pokemonId));
+  const { data: pokemon, isPending } = useQuery(
+    getPokemonDetailsQueryOptions(pokemonId)
+  );
 
   const selectedDetails = useSelectedDetails();
   const { toggleDetails } = usePokemonActions();
@@ -80,12 +77,8 @@ function RouteComponent() {
     );
   }
 
-  if (isError || !pokemon) {
-    return (
-      <div className="p-8 text-center text-red-500 dark:text-red-400">
-        {error.message}
-      </div>
-    );
+  if (!pokemon) {
+    return null;
   }
 
   const isSelected = selectedDetails?.id === pokemon.id;
