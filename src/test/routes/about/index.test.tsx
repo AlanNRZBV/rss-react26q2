@@ -1,9 +1,20 @@
 import { screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { renderWithFileRoutes } from '../../file-route-utils';
 
+vi.mock('../../../hooks/usePokemons', () => ({
+  usePokemons: vi.fn(() => ({
+    data: { results: [], total: 0 },
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+}));
+
 const renderAbout = async () => {
-  await renderWithFileRoutes(<></>, { initialLocation: '/about/' });
+  await renderWithFileRoutes(<></>, {
+    initialLocation: '/about/',
+  });
 };
 
 describe('About index route', () => {

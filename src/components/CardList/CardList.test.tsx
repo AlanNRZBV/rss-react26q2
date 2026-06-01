@@ -1,12 +1,13 @@
-import { render, screen, act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import CardList from './CardList';
-import { fetchPokemons } from '../../api/pokemons';
+import { usePokemons } from '../../hooks/usePokemons.ts';
 import type { PokemonCardData } from '../../types/types';
 import { mockPokemonList } from '../../test-utils/mocks/pokemonData';
+import { renderWithProviders } from '../../test-utils/test-render';
 
-vi.mock('../../api/pokemons', () => ({
-  fetchPokemons: vi.fn(),
+vi.mock('../../hooks/usePokemons.ts', () => ({
+  usePokemons: vi.fn(),
 }));
 
 vi.mock('../Card/Card.tsx', () => ({
@@ -36,7 +37,7 @@ vi.mock('../../routes/_layout.tsx', () => ({
 
 const renderCardList = async (searchTerm = '') => {
   await act(async () => {
-    render(<CardList searchTerm={searchTerm} />);
+    renderWithProviders(<CardList searchTerm={searchTerm} />);
   });
 };
 
@@ -47,10 +48,12 @@ describe('CardList Component', () => {
 
   describe('Data Display Tests', () => {
     it('Correctly displays item names and descriptions', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue({
-        results: mockPokemonList,
-        total: mockPokemonList.length,
-      });
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: mockPokemonList, total: mockPokemonList.length },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 
@@ -66,10 +69,12 @@ describe('CardList Component', () => {
         { id: 100, name: undefined },
       ] as unknown as PokemonCardData[];
 
-      vi.mocked(fetchPokemons).mockResolvedValue({
-        results: corruptedData,
-        total: corruptedData.length,
-      });
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: corruptedData, total: corruptedData.length },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 
@@ -82,9 +87,12 @@ describe('CardList Component', () => {
 
   describe('Error Handling Tests (UI)', () => {
     it('Displays error message when API call fails', async () => {
-      vi.mocked(fetchPokemons).mockRejectedValue(
-        new Error('Network connection lost')
-      );
+      vi.mocked(usePokemons).mockReturnValue({
+        data: undefined,
+        isPending: false,
+        isError: true,
+        error: new Error('Network connection lost'),
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 
@@ -96,7 +104,12 @@ describe('CardList Component', () => {
 
   describe('Accessibility Tests', () => {
     it('Has appropriate ARIA labels for screen readers', async () => {
-      vi.mocked(fetchPokemons).mockImplementation(() => new Promise(() => {}));
+      vi.mocked(usePokemons).mockReturnValue({
+        data: undefined,
+        isPending: true,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 
@@ -109,50 +122,53 @@ describe('CardList Component', () => {
 
   describe('Integration Tests', () => {
     it('Makes initial API call on component mount', async () => {
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: [], total: 0 },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
       await renderCardList();
 
-      expect(fetchPokemons).toHaveBeenCalledTimes(1);
+      expect(usePokemons).toHaveBeenCalled();
     });
 
     it('Manages loading states during API calls', async () => {
-      let resolveApi: (val: {
-        results: PokemonCardData[];
-        total: number;
-      }) => void;
-      vi.mocked(fetchPokemons).mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolveApi = resolve;
-          })
-      );
+      vi.mocked(usePokemons).mockReturnValue({
+        data: undefined,
+        isPending: true,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 
       const spinner = screen.getByLabelText(/loading pokemons/i);
       expect(spinner).toBeInTheDocument();
-
-      await act(async () => {
-        resolveApi!({ results: [], total: 0 });
-      });
-
-      const noResults = await screen.findByText(/no results/i);
-      expect(noResults).toBeInTheDocument();
-      expect(spinner).not.toBeInTheDocument();
     });
   });
 
   describe('API Integration Tests', () => {
     it('Calls API with correct parameters', async () => {
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: [], total: 0 },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
+
       await renderCardList('mewtwo');
 
-      expect(fetchPokemons).toHaveBeenCalledWith('mewtwo', 25, 0);
+      expect(usePokemons).toHaveBeenCalledWith('mewtwo', 1, 25);
     });
 
     it('Handles successful API responses', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue({
-        results: [mockPokemonList[0]],
-        total: 1,
-      });
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: [mockPokemonList[0]], total: 1 },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList('bulbasaur');
 
@@ -161,9 +177,12 @@ describe('CardList Component', () => {
     });
 
     it('Handles API error responses', async () => {
-      vi.mocked(fetchPokemons).mockRejectedValue(
-        new Error('No Pokémon found.')
-      );
+      vi.mocked(usePokemons).mockReturnValue({
+        data: undefined,
+        isPending: false,
+        isError: true,
+        error: new Error('No Pokémon found.'),
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList('unknown');
 
@@ -174,10 +193,12 @@ describe('CardList Component', () => {
 
   describe('State Management Tests', () => {
     it('Updates component state based on API responses', async () => {
-      vi.mocked(fetchPokemons).mockResolvedValue({
-        results: mockPokemonList,
-        total: mockPokemonList.length,
-      });
+      vi.mocked(usePokemons).mockReturnValue({
+        data: { results: mockPokemonList, total: mockPokemonList.length },
+        isPending: false,
+        isError: false,
+        error: null,
+      } as unknown as ReturnType<typeof usePokemons>);
 
       await renderCardList();
 

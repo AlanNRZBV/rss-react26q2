@@ -8,9 +8,12 @@ import {
 import { routeTree } from '../routeTree.gen';
 import { ThemeProvider } from '../context/ThemeContext.tsx';
 
+import { QueryClientProvider } from '@tanstack/react-query';
+import { createTestQueryClient } from '../test-utils/QueryClientWrapper.tsx';
+
 export { createMockFileRoute } from './mock-route-utils';
 
-interface RenderWithFileRoutesOptions extends Omit<RenderOptions, 'wrapper'> {
+interface RenderWithFileRoutesOptions extends RenderOptions {
   initialLocation?: string;
   routerContext?: Record<string, unknown>;
 }
@@ -31,14 +34,17 @@ export async function renderWithFileRoutes(
     context: routerContext,
   });
 
+  const queryClient = createTestQueryClient();
   let result!: ReturnType<typeof render>;
 
   await act(async () => {
     await router.load();
     result = render(
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>,
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </QueryClientProvider>,
       renderOptions
     );
   });

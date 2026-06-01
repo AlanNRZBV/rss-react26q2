@@ -3,12 +3,14 @@ import { type FC, type PropsWithChildren } from 'react';
 type CustomButtonProps = PropsWithChildren<{
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }>;
 
 const CustomButton: FC<CustomButtonProps> = ({
   onClick,
   children,
   className = '',
+  disabled,
 }) => {
   return (
     <button
@@ -16,6 +18,7 @@ const CustomButton: FC<CustomButtonProps> = ({
   dark:hover:bg-gray-700 dark:hover:text-white 
   dark:focus:ring-offset-gray-900 ${className}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>

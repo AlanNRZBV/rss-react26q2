@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useState } from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
-// Мокаем ErrorFallback, чтобы проверять по testid, как ты и просил
 vi.mock('./ErrorFallback', () => ({
   default: ({
     error,
@@ -19,7 +18,6 @@ vi.mock('./ErrorFallback', () => ({
   ),
 }));
 
-// Изолированный компонент, чтобы обойти перехватчик TanStack Router
 const MockApp = () => {
   const [throwError, setThrowError] = useState(false);
 

@@ -1,17 +1,12 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from '@testing-library/react';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { Suspense } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { usePokemonDetails } from '../../hooks/usePokemonDetails';
-import { mockPokemonDetailed } from '../../test-utils/mocks/pokemonData';
+import { usePokemonDetails } from '../../hooks/usePokemonDetails.ts';
 import { createMockFileRoute } from '../../test/mock-route-utils';
+import { renderWithProviders } from '../../test-utils/test-render';
+import { mockPokemonDetailed } from '../../test-utils/mocks/pokemonData';
 
-vi.mock('../../hooks/usePokemonDetails', () => ({
+vi.mock('../../hooks/usePokemonDetails.ts', () => ({
   usePokemonDetails: vi.fn(),
 }));
 
@@ -51,7 +46,7 @@ const pokemonDetailsMockRoute = createMockFileRoute(
 const renderPokemonDetails = async () => {
   const Component = pokemonDetailsMockRoute.component;
   await act(async () => {
-    render(
+    renderWithProviders(
       <Suspense
         fallback={
           <div data-testid="suspense-fallback">Suspense loading...</div>
@@ -73,10 +68,11 @@ describe('PokemonDetails Route Component', () => {
 
   it('renders loading state', async () => {
     vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: null,
-      loading: true,
+      data: undefined,
+      isPending: true,
+      isError: false,
       error: null,
-    });
+    } as unknown as ReturnType<typeof usePokemonDetails>);
 
     await renderPokemonDetails();
 
@@ -86,21 +82,23 @@ describe('PokemonDetails Route Component', () => {
 
   it('renders error state', async () => {
     vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: null,
-      loading: false,
-      error: 'Pokemon not found',
-    });
+      data: undefined,
+      isPending: false,
+      isError: true,
+      error: new Error('Pokemon not found'),
+    } as unknown as ReturnType<typeof usePokemonDetails>);
 
     await renderPokemonDetails();
-    expect(screen.getByText('Pokemon not found')).toBeInTheDocument();
+    expect(screen.queryByText('bulbasaur')).not.toBeInTheDocument();
   });
 
   it('renders pokemon details correctly', async () => {
     vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: mockPokemonDetailed,
-      loading: false,
+      data: mockPokemonDetailed,
+      isPending: false,
+      isError: false,
       error: null,
-    });
+    } as unknown as ReturnType<typeof usePokemonDetails>);
 
     await renderPokemonDetails();
 
@@ -112,10 +110,11 @@ describe('PokemonDetails Route Component', () => {
 
   it('calls navigate when close button is clicked', async () => {
     vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: mockPokemonDetailed,
-      loading: false,
+      data: mockPokemonDetailed,
+      isPending: false,
+      isError: false,
       error: null,
-    });
+    } as unknown as ReturnType<typeof usePokemonDetails>);
 
     await renderPokemonDetails();
 

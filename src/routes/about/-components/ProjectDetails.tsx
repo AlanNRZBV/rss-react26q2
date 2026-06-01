@@ -27,16 +27,20 @@ const projectDetails: ProjectDetail[] = [
 
 const ProjectDetails: FC = () => {
   return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="p-6 bg-white dark:bg-gray-900 transition-colors">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         Project Details
       </h2>
-
       <div className="flow-root">
-        <dl className="-my-3 divide-y divide-gray-100 text-sm">
+        <dl className="-my-3 divide-y divide-gray-100 dark:divide-gray-800 text-sm">
           {projectDetails.map((detail) => (
             <DetailItem key={detail.label} label={detail.label}>
-              <a href={detail.href}>{detail.value}</a>
+              <a
+                href={detail.href}
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                {detail.value}
+              </a>
             </DetailItem>
           ))}
         </dl>

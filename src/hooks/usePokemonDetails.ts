@@ -1,31 +1,22 @@
-import { useState, useEffect } from 'react';
-import { fetchPokemonById } from '../api/pokemons.ts';
-import type { PokemonDetailedData } from '../types/types';
+import { queryOptions, useQuery } from '@tanstack/react-query';
+import { baseApi } from '../api/instance.ts';
+import { handleApiError } from '../api/errorHandler.ts';
+import { formatDetailedPokemonData } from '../lib/pokemonMappers.ts';
 
-export const usePokemonDetails = (pokemonId: string) => {
-  const [pokemon, setPokemon] = useState<PokemonDetailedData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadDetails = async () => {
-      setLoading(true);
-      setError(null);
-
+export const getPokemonDetailsQueryOptions = (id: string) => {
+  return queryOptions({
+    queryKey: ['pokemons', 'details', id] as const,
+    queryFn: async () => {
       try {
-        const data = await fetchPokemonById(pokemonId);
-        setPokemon(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error');
-      } finally {
-        setLoading(false);
+        const { data } = await baseApi.get(`/${id}`);
+        return formatDetailedPokemonData(data);
+      } catch (error) {
+        handleApiError(error, id);
       }
-    };
+    },
+  });
+};
 
-    if (pokemonId) {
-      loadDetails();
-    }
-  }, [pokemonId]);
-
-  return { pokemon, loading, error };
+export const usePokemonDetails = (id: string) => {
+  return useQuery(getPokemonDetailsQueryOptions(id));
 };

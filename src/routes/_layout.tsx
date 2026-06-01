@@ -23,8 +23,8 @@ function RouteComponent() {
     ''
   );
   const [searchTerm, setSearchTerm] = useState(activeSearchTerm);
-
   const matchRoute = useMatchRoute();
+
   const isDetailsOpen = !!matchRoute({ to: '/$pokemonId' });
 
   const handleSimulateError = () => {

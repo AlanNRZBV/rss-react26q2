@@ -1,7 +1,16 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { STORAGE_KEY } from './lib/constants';
 import { renderWithFileRoutes } from './test/file-route-utils';
+
+vi.mock('./hooks/usePokemons', () => ({
+  usePokemons: vi.fn(() => ({
+    data: { results: [], total: 0 },
+    isPending: false,
+    isError: false,
+    error: null,
+  })),
+}));
 
 const renderApp = async (searchTerm = '') => {
   await renderWithFileRoutes(<></>, {
