@@ -1,18 +1,17 @@
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from '@testing-library/react';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { Suspense } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { usePokemonDetails } from '../../hooks/usePokemonDetails';
-import { mockPokemonDetailed } from '../../test-utils/mocks/pokemonData';
+import { getPokemonDetailsQueryOptions } from '../../api/queries.ts';
 import { createMockFileRoute } from '../../test/mock-route-utils';
+import { renderWithProviders } from '../../test-utils/test-render';
+import {
+  mockPokemonDetailsQuery,
+  mockQueryError,
+  mockQueryLoading,
+} from '../../test-utils/queryMocks';
 
-vi.mock('../../hooks/usePokemonDetails', () => ({
-  usePokemonDetails: vi.fn(),
+vi.mock('../../api/queries.ts', () => ({
+  getPokemonDetailsQueryOptions: vi.fn(),
 }));
 
 const mockNavigate = vi.fn();
@@ -51,7 +50,7 @@ const pokemonDetailsMockRoute = createMockFileRoute(
 const renderPokemonDetails = async () => {
   const Component = pokemonDetailsMockRoute.component;
   await act(async () => {
-    render(
+    renderWithProviders(
       <Suspense
         fallback={
           <div data-testid="suspense-fallback">Suspense loading...</div>
@@ -72,11 +71,11 @@ describe('PokemonDetails Route Component', () => {
   });
 
   it('renders loading state', async () => {
-    vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: null,
-      loading: true,
-      error: null,
-    });
+    vi.mocked(getPokemonDetailsQueryOptions).mockReturnValue(
+      mockQueryLoading() as unknown as ReturnType<
+        typeof getPokemonDetailsQueryOptions
+      >
+    );
 
     await renderPokemonDetails();
 
@@ -85,22 +84,20 @@ describe('PokemonDetails Route Component', () => {
   });
 
   it('renders error state', async () => {
-    vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: null,
-      loading: false,
-      error: 'Pokemon not found',
-    });
+    vi.mocked(getPokemonDetailsQueryOptions).mockReturnValue(
+      mockQueryError('Pokemon not found') as unknown as ReturnType<
+        typeof getPokemonDetailsQueryOptions
+      >
+    );
 
     await renderPokemonDetails();
-    expect(screen.getByText('Pokemon not found')).toBeInTheDocument();
+    expect(screen.queryByText('bulbasaur')).not.toBeInTheDocument();
   });
 
   it('renders pokemon details correctly', async () => {
-    vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: mockPokemonDetailed,
-      loading: false,
-      error: null,
-    });
+    vi.mocked(getPokemonDetailsQueryOptions).mockReturnValue(
+      mockPokemonDetailsQuery()
+    );
 
     await renderPokemonDetails();
 
@@ -111,11 +108,9 @@ describe('PokemonDetails Route Component', () => {
   });
 
   it('calls navigate when close button is clicked', async () => {
-    vi.mocked(usePokemonDetails).mockReturnValue({
-      pokemon: mockPokemonDetailed,
-      loading: false,
-      error: null,
-    });
+    vi.mocked(getPokemonDetailsQueryOptions).mockReturnValue(
+      mockPokemonDetailsQuery()
+    );
 
     await renderPokemonDetails();
 

@@ -1,7 +1,14 @@
 import { fireEvent, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { STORAGE_KEY } from './lib/constants';
 import { renderWithFileRoutes } from './test/file-route-utils';
+
+vi.mock('./api/queries.ts', () => ({
+  getPokemonsQueryOptions: vi.fn(() => ({
+    queryKey: ['pokemons'],
+    queryFn: () => Promise.resolve({ results: [], total: 0 }),
+  })),
+}));
 
 const renderApp = async (searchTerm = '') => {
   await renderWithFileRoutes(<></>, {

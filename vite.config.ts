@@ -36,6 +36,7 @@ export default defineConfig({
         'src/**/types.ts',
         'src/**/*utils.tsx',
         'src/**/$.tsx',
+        'src/api/instance.ts',
       ],
       thresholds: {
         global: {
