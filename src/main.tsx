@@ -7,6 +7,8 @@ import { routeTree } from './routeTree.gen.ts';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import ErrorFallback from './components/ErrorBoundary/ErrorFallback.tsx';
 import { ThemeProvider } from './context/ThemeContext.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const router = createRouter({
   routeTree,
@@ -21,12 +23,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <TanStackRouterDevtools router={router} />
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <TanStackRouterDevtools router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </StrictMode>

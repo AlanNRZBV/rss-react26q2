@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Route as LayoutRoute } from '../../routes/_layout.tsx';
-import { usePokemonDetails } from '../../hooks/usePokemonDetails.ts';
 import type { PokemonDetailedData } from '../../types/types.ts';
 import { usePokemonActions, useSelectedDetails } from '../../store/store.ts';
+import { getPokemonDetailsQueryOptions } from '../../api/queries.ts';
+import { useQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/_layout/$pokemonId')({
   component: RouteComponent,
@@ -47,7 +48,14 @@ const STATS_CONFIG = [
 function RouteComponent() {
   const { pokemonId } = Route.useParams();
   const navigate = LayoutRoute.useNavigate();
-  const { pokemon, loading, error } = usePokemonDetails(pokemonId);
+  const {
+    data: pokemon,
+    isPending,
+    isError,
+    error,
+  } = useQuery(getPokemonDetailsQueryOptions(pokemonId));
+
+  console.log(isPending);
 
   const selectedDetails = useSelectedDetails();
   const { toggleDetails } = usePokemonActions();
@@ -62,7 +70,7 @@ function RouteComponent() {
     });
   };
 
-  if (loading) {
+  if (isPending) {
     return (
       <div className="flex h-full items-center justify-center p-8">
         <div
@@ -74,10 +82,10 @@ function RouteComponent() {
     );
   }
 
-  if (error || !pokemon) {
+  if (isError || !pokemon) {
     return (
       <div className="p-8 text-center text-red-500 dark:text-red-400">
-        {error}
+        {error.message}
       </div>
     );
   }
@@ -86,7 +94,7 @@ function RouteComponent() {
 
   return (
     <div
-      className={`sticky top-4 flex flex-col gap-4 p-6 bg-white rounded-2xl border 
+      className={`sticky top-4 flex flex-col gap-4 p-6 bg-white rounded-2xl border border-transparent shadow-sm
       transition-all duration-300 hover:shadow-md 
       dark:bg-gray-900 dark:hover:shadow-gray-800/25 ${
         isSelected

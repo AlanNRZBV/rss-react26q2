@@ -2,7 +2,8 @@ import { useMatchRoute } from '@tanstack/react-router';
 import Card from '../Card/Card.tsx';
 import Pagination from '../Pagination/Pagination.tsx';
 import { Route } from '../../routes/_layout.tsx';
-import { usePokemons } from '../../hooks/usePokemons.ts';
+import { getPokemonsQueryOptions } from '../../api/queries.ts';
+import { useQuery } from '@tanstack/react-query';
 
 type CardListProps = {
   searchTerm: string;
@@ -12,10 +13,9 @@ const LIMIT = 25;
 
 const CardList = ({ searchTerm }: CardListProps) => {
   const { page } = Route.useSearch();
-  const { pokemons, loading, error, totalPages } = usePokemons(
-    searchTerm,
-    page,
-    LIMIT
+
+  const { data, isPending, isError, error } = useQuery(
+    getPokemonsQueryOptions(searchTerm, page, LIMIT)
   );
 
   const navigate = Route.useNavigate();
@@ -32,7 +32,7 @@ const CardList = ({ searchTerm }: CardListProps) => {
     });
   };
 
-  if (loading) {
+  if (isPending) {
     return (
       <div className="flex justify-center items-center">
         <div
@@ -45,16 +45,19 @@ const CardList = ({ searchTerm }: CardListProps) => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div
         className="py-8 text-center text-red-600 rounded-2xl border
         border-gray-200 bg-white shadow-sm"
       >
-        <p>{error}</p>
+        <p>{error.message}</p>
       </div>
     );
   }
+
+  const pokemons = data?.results || [];
+  const totalPages = data?.total || 0;
 
   if (pokemons.length === 0) {
     return (
