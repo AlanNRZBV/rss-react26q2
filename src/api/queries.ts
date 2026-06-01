@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 import axios from 'axios';
 import type { PokemonCardData, PokemonDetailedData } from '../types/types.ts';
 import { baseApi } from './instance.ts';
+import { handleApiError } from './errorHandler.ts';
 
 type RawStat = { stat: { name: string }; base_stat: number };
 type RawAbility = { ability: { name: string } };
@@ -92,17 +93,7 @@ export const getPokemonsQueryOptions = (
           total: totalCount,
         };
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const status = error.response?.status;
-          if (status && status >= 400) {
-            throw new Error(
-              status === 404
-                ? `No Pokémon found for "${term}".`
-                : `Server error (${status}). Please try again later.`
-            );
-          }
-        }
-        throw error;
+        handleApiError(error, term);
       }
     },
   });
@@ -115,8 +106,8 @@ export const getPokemonDetailsQueryOptions = (id: string) => {
       try {
         const { data } = await baseApi.get(`/${id}`);
         return formatDetailedPokemonData(data);
-      } catch {
-        throw new Error(`Failed to load details for pokemon #${id}`);
+      } catch (error) {
+        handleApiError(error, id);
       }
     },
   });
