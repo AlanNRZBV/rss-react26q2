@@ -60,8 +60,8 @@ export const getPokemonsQueryOptions = (
   const term = searchTerm.trim().toLowerCase();
 
   return queryOptions({
-    queryKey: ['pokemons', 'list', { term, page, limit }],
-
+    queryKey: ['pokemons', 'list', { term, page, limit }] as const,
+    staleTime: import.meta.env.VITE_API_TTL_VALUE || 120,
     queryFn: async () => {
       const offset = (page - 1) * limit;
       try {
@@ -110,7 +110,7 @@ export const getPokemonsQueryOptions = (
 
 export const getPokemonDetailsQueryOptions = (id: string) => {
   return queryOptions({
-    queryKey: ['pokemons', 'details', id],
+    queryKey: ['pokemons', 'details', id] as const,
     queryFn: async () => {
       try {
         const { data } = await baseApi.get(`/${id}`);
