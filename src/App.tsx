@@ -1,7 +1,7 @@
-import './App.css';
+import Container from './components/Container/Container.tsx';
 
 function App() {
-  return <div>tests</div>;
+  return <Container>test</Container>;
 }
 
 export default App;
