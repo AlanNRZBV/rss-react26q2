@@ -9,7 +9,7 @@ const Container: FC<ContainerProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center min-h-screen ${className}`}
+      className={`flex items-center justify-center min-h-screen dark:bg-gray-800 ${className}`}
       {...props}
     >
       {children}
