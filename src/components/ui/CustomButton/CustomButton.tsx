@@ -1,15 +1,17 @@
 import type { ComponentProps, FC } from 'react';
 
-type ButtonVariant = 'contained' | 'text';
+type ButtonVariant = 'contained' | 'outlined' | 'iconOnly';
 type CustomButtonProps = ComponentProps<'button'> & {
-  title: string;
+  title?: string;
   variant?: ButtonVariant;
 };
 
 const variantStyles: Record<ButtonVariant, string> = {
   contained:
-    'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900',
-  text: 'border border-transparent bg-gray-800 text-white hover:bg-gray-900',
+    'border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700 focus-visible:ring-indigo-200 dark:border-indigo-300 dark:bg-indigo-300 dark:text-gray-900 dark:hover:bg-indigo-200 dark:focus-visible:ring-indigo-700 text-sm font-semibold px-6 py-3 ',
+  outlined:
+    'border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 focus-visible:ring-slate-200 dark:border-slate-600 dark:bg-gray-900 dark:text-slate-200 dark:hover:border-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-50 dark:focus-visible:ring-slate-700 text-sm font-semibold px-6 py-3 ',
+  iconOnly: 'size-8',
 };
 
 const CustomButton: FC<CustomButtonProps> = ({
@@ -20,7 +22,7 @@ const CustomButton: FC<CustomButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'px-3 py-2 font-medium transition-colors focus:z-10 focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 focus:ring-offset-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 rounded-sm inline-flex items-center justify-center';
+    'inline-flex items-center justify-center rounded-full border  shadow-sm transition-colors focus-visible:ring-4 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
 
   const combinedClassName =
     `${baseStyles} ` + `${variantStyles[variant]} ` + `${className}`;
