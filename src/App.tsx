@@ -2,6 +2,7 @@ import Container from './components/Container/Container.tsx';
 import CustomButton from './components/ui/CustomButton/CustomButton.tsx';
 import { useState } from 'react';
 import CustomModal from './components/ui/CustomModal/CustomModal.tsx';
+import DataContainer from './components/DataContainer/DataContainer.tsx';
 
 export type ModalType = 'controlled' | 'uncontrolled' | null;
 
@@ -14,33 +15,38 @@ function App() {
 
   return (
     <Container>
-      <div className="flex gap-4">
-        <CustomButton
-          onClick={() => {
-            setModal('controlled');
-          }}
-          title="controlled"
-        />
-        <CustomButton
-          onClick={() => {
-            setModal('uncontrolled');
-          }}
-          variant="outlined"
-          title="uncontrolled"
-        />
-        <CustomModal
-          isOpen={modal !== null}
-          formType={modal}
-          title={
-            modal === 'controlled' ? 'controlled form' : 'uncontrolled form'
-          }
-          onClose={handleClose}
-          description={
-            modal === 'controlled'
-              ? 'controlled form description'
-              : 'uncontrolled form description'
-          }
-        />
+      <div className="flex px-4 rounded-xl border dark:border-gray-700 dark:bg-gray-800">
+        <DataContainer />
+      </div>
+      <div className="flex items-center justify-center grow">
+        <div className="flex gap-4">
+          <CustomButton
+            onClick={() => {
+              setModal('controlled');
+            }}
+            title="controlled"
+          />
+          <CustomButton
+            onClick={() => {
+              setModal('uncontrolled');
+            }}
+            variant="outlined"
+            title="uncontrolled"
+          />
+          <CustomModal
+            isOpen={modal !== null}
+            formType={modal}
+            title={
+              modal === 'controlled' ? 'controlled form' : 'uncontrolled form'
+            }
+            onClose={handleClose}
+            description={
+              modal === 'controlled'
+                ? 'controlled form description'
+                : 'uncontrolled form description'
+            }
+          />
+        </div>
       </div>
     </Container>
   );
