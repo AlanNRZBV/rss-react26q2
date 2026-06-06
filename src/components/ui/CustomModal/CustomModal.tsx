@@ -77,7 +77,7 @@ const CustomModal: FC<CustomModalProps> = ({
       >
         {description}
       </p>
-      <div>{content}</div>
+      <div className="py-2">{content}</div>
     </dialog>,
     document.body
   );
