@@ -56,6 +56,7 @@ export type FormSchemaType = z.infer<typeof formSchema>;
 
 type SubmitItem = {
   id: string;
+  createdAt: number;
   submission: FormSchemaType;
 };
 
@@ -76,6 +77,7 @@ export const useFormStore = create<FormStoreState>()((set, get) => ({
           ...state.submissions,
           {
             id: crypto.randomUUID(),
+            createdAt: Date.now(),
             submission: submissionData,
           },
         ],

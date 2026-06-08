@@ -21,21 +21,51 @@ const CustomModal: FC<CustomModalProps> = ({
   description,
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
-
     if (!dialog) return;
 
     if (isOpen && !dialog.open) {
+      triggerRef.current = document.activeElement as HTMLElement;
       dialog.showModal();
     } else if (!isOpen && dialog.open) {
       dialog.close();
+      triggerRef.current?.focus();
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleCancel = (e: Event) => {
+      e.preventDefault();
+      onClose();
+    };
+
+    const handleBackdropClick = (e: MouseEvent) => {
+      if (e.target === dialog) {
+        onClose();
+      }
+    };
+
+    dialog.addEventListener('cancel', handleCancel);
+    dialog.addEventListener('click', handleBackdropClick);
+
+    return () => {
+      dialog.removeEventListener('cancel', handleCancel);
+      dialog.removeEventListener('click', handleBackdropClick);
+    };
+  }, [onClose]);
+
   const content =
-    formType === 'controlled' ? <ControlledForm /> : <UncontrolledForm />;
+    formType === 'controlled' ? (
+      <ControlledForm />
+    ) : (
+      <UncontrolledForm onSuccess={onClose} />
+    );
 
   return createPortal(
     <dialog

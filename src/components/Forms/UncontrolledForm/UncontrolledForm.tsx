@@ -7,14 +7,16 @@ import CustomFileInput from '../../ui/CustomFileInput/CustomFileInput.tsx';
 import CustomButton from '../../ui/CustomButton/CustomButton.tsx';
 import { formSchema, useFormActions } from '../../../store/store.ts';
 import * as React from 'react';
-import { useState } from 'react';
+import { type FC, useState } from 'react';
 
-const UncontrolledForm = () => {
+type UncontrolledFormProps = {
+  onSuccess: () => void;
+};
+
+const UncontrolledForm: FC<UncontrolledFormProps> = ({ onSuccess }) => {
   const { addSubmission } = useFormActions();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  console.log(errors);
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,10 +42,6 @@ const UncontrolledForm = () => {
 
     const result = await formSchema.safeParseAsync(rawValues);
 
-    console.log('result.data', result.data);
-    console.log('result.error', result.error);
-    console.log('result.error.issues', result.error?.issues);
-
     if (!result.success) {
       const errs: Record<string, string> = {};
       result.error.issues.forEach((issue) => {
@@ -59,6 +57,7 @@ const UncontrolledForm = () => {
     addSubmission(result.data);
     setErrors({});
     formElement.reset();
+    onSuccess();
   };
 
   return (
