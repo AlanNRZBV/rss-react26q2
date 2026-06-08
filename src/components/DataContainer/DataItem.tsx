@@ -1,11 +1,12 @@
-import type { FC } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import type { FormSchemaType } from '../../store/store.ts';
 
 type DataItemProps = {
   submission: FormSchemaType;
+  createdAt: number;
 };
 
-const DataItem: FC<DataItemProps> = ({ submission }) => {
+const DataItem: FC<DataItemProps> = ({ submission, createdAt }) => {
   const {
     name,
     age,
@@ -16,8 +17,25 @@ const DataItem: FC<DataItemProps> = ({ submission }) => {
     files,
     gender,
   } = submission;
+
+  const [isHighlighted, setIsHighlighted] = useState(() => {
+    return Date.now() - createdAt < 2000;
+  });
+
+  useEffect(() => {
+    if (!isHighlighted) return;
+    const timer = setTimeout(() => setIsHighlighted(false), 2000);
+    return () => clearTimeout(timer);
+  }, [isHighlighted]);
+
   return (
-    <div className="">
+    <div
+      className={`transition-colors duration-500 ${
+        isHighlighted
+          ? 'border-green-400 bg-green-50 dark:border-green-600 dark:bg-green-950'
+          : ''
+      }`}
+    >
       <dl className="-my-3 divide-y divide-gray-200 rounded border border-gray-200 text-sm dark:divide-gray-900 dark:border-gray-900">
         <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt className="font-medium text-gray-900 dark:text-white">Name</dt>
