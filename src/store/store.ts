@@ -85,5 +85,3 @@ export const useFormStore = create<FormStoreState>()((set, get) => ({
 }));
 
 export const useFormActions = () => useFormStore((state) => state.actions);
-export const useFormSubmissions = () =>
-  useFormStore((state) => state.submissions);

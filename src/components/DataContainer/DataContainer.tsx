@@ -1,5 +1,5 @@
-import { useFormSubmissions } from '../../store/store.ts';
 import DataItem from './DataItem.tsx';
+import { useFormActions } from '../../store/store.ts';
 
 const mockData = [
   {
@@ -44,7 +44,8 @@ const mockData = [
 ];
 
 const DataContainer = () => {
-  const data = useFormSubmissions();
+  const { getSubmissions } = useFormActions();
+  const data = getSubmissions();
 
   if (data.length === 0) {
     return (
