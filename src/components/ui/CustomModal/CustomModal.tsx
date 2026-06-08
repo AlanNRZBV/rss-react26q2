@@ -62,7 +62,7 @@ const CustomModal: FC<CustomModalProps> = ({
 
   const content =
     formType === 'controlled' ? (
-      <ControlledForm />
+      <ControlledForm onSuccess={onClose} />
     ) : (
       <UncontrolledForm onSuccess={onClose} />
     );

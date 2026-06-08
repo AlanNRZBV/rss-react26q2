@@ -31,18 +31,21 @@ export const formSchema = z
       .regex(/[0-9]/, 'Must contain at least 1 number')
       .regex(/[^A-Za-z0-9]/, 'Must contain at least 1 special character'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
-    files: z
-      .instanceof(File, { message: 'Please upload an image' })
-      .refine((file) => file.size > 0, 'Please upload an image')
-      .refine(
-        (file) => file.size <= MAX_FILE_SIZE,
-        `File size must not exceed ${MAX_FILE_SIZE / 1024 / 1024}MB`
-      )
-      .refine(
-        (file) => IMAGE_TYPES.includes(file.type),
-        'Only JPEG and PNG files are allowed'
-      )
-      .transform((file) => convertToBase64(file)),
+    files: z.preprocess(
+      (val) => (val instanceof FileList ? (val.item(0) ?? undefined) : val),
+      z
+        .instanceof(File, { message: 'Please upload an image' })
+        .refine((file) => file.size > 0, 'Please upload an image')
+        .refine(
+          (file) => file.size <= MAX_FILE_SIZE,
+          `File size must not exceed ${MAX_FILE_SIZE / 1024 / 1024}MB`
+        )
+        .refine(
+          (file) => IMAGE_TYPES.includes(file.type),
+          'Only JPEG and PNG files are allowed'
+        )
+        .transform((file) => convertToBase64(file))
+    ),
     terms: z.coerce.boolean().refine((val) => val, {
       message: 'You must accept the terms and conditions',
     }),

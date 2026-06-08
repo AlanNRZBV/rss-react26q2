@@ -1,5 +1,5 @@
 import CustomInput from '../../ui/CustomInput/CustomInput.tsx';
-import CustomAutocomplete from '../../ui/CustomSelect/CustomAutocomplete.tsx';
+import CustomAutocomplete from '../../ui/CustomAutocomplete/CustomAutocomplete.tsx';
 import { GENDERS } from '../../../lib/constants/genders.ts';
 import { COUNTRIES } from '../../../lib/constants/countries.ts';
 import CustomCheckbox from '../../ui/CustomCheckbox/CustomCheckbox.tsx';
