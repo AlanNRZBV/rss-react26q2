@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react';
 
 type CustomFileInputProps = ComponentProps<'input'> & {
   label: string;
+  error?: string;
 };
 
 const CustomFileInput = ({
@@ -9,12 +10,17 @@ const CustomFileInput = ({
   id,
   className = '',
   ref,
+  error,
   ...props
 }: CustomFileInputProps) => {
   return (
     <label
       htmlFor={id}
-      className={`block cursor-pointer rounded border border-gray-300 bg-white p-4 text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:p-6 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus-within:ring-offset-gray-900 ${className}`}
+      className={`block cursor-pointer rounded border border-gray-300 bg-white p-4 text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:p-6 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus-within:ring-offset-gray-900 ${
+        error
+          ? 'border-red-500 focus-within:ring-red-500'
+          : 'border-gray-300 focus-within:ring-indigo-500 dark:border-gray-700'
+      } ${className}`}
     >
       <div className="flex items-center justify-center gap-4">
         <span className="font-medium dark:text-white capitalize">{label}</span>
@@ -33,7 +39,17 @@ const CustomFileInput = ({
           />
         </svg>
       </div>
-      <input ref={ref} type="file" id={id} className="sr-only" {...props} />
+      <input
+        accept="image/png, image/jpeg"
+        ref={ref}
+        type="file"
+        id={id}
+        className="sr-only"
+        {...props}
+      />
+      <span className="mt-1 block min-h-4 text-xs text-red-500 dark:text-red-400">
+        {error}
+      </span>
     </label>
   );
 };

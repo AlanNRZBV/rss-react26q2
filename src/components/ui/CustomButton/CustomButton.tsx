@@ -21,8 +21,7 @@ const CustomButton: FC<CustomButtonProps> = ({
   variant = 'contained',
   ...props
 }) => {
-  const baseStyles =
-    'inline-flex items-center justify-center rounded-full border  shadow-sm transition-colors focus-visible:ring-4 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
+  const baseStyles = `inline-flex items-center justify-center rounded-full border  shadow-sm transition-colors focus-visible:ring-4 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50`;
 
   const combinedClassName =
     `${baseStyles} ` + `${variantStyles[variant]} ` + `${className}`;

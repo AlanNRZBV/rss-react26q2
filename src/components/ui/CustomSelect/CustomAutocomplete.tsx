@@ -8,6 +8,7 @@ export type SelectOption = {
 
 type CustomAutocompleteProps = ComponentProps<'input'> & {
   label: string;
+  error?: string;
   options: SelectOption[];
 };
 
@@ -17,6 +18,7 @@ const CustomAutocomplete = ({
   className = '',
   options,
   ref,
+  error,
   ...props
 }: CustomAutocompleteProps) => {
   const capitalizedLabel = capitalizeFirstLetter(label);
@@ -32,7 +34,11 @@ const CustomAutocomplete = ({
           ref={ref}
           id={id}
           list={dataListId}
-          className={`mt-0.5 min-h-8 w-full rounded border-gray-300 shadow-sm sm:text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white ${className}`}
+          className={`mt-0.5 min-h-8 w-full rounded border shadow-sm sm:text-sm focus-visible:outline-none focus-visible:ring-2 dark:bg-gray-900 dark:text-white ${
+            error
+              ? 'border-red-500 focus-visible:ring-red-500 dark:border-red-500'
+              : 'focus-visible:ring-indigo-500 dark:border-gray-600'
+          } ${className}`}
           {...props}
         />
       </label>
@@ -43,6 +49,9 @@ const CustomAutocomplete = ({
           </option>
         ))}
       </datalist>
+      <span className="mt-1 block min-h-4 text-xs text-red-500 dark:text-red-400">
+        {error}
+      </span>
     </div>
   );
 };
