@@ -1,12 +1,16 @@
 import { z } from 'zod';
 import { create } from 'zustand/react';
+import { convertToBase64 } from '../lib/utils/convertToBase64.ts';
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
 export const formSchema = z
   .object({
     name: z.string().min(2, 'Name is too short'),
     age: z.coerce.number().min(1, 'You can not be that young'),
-    country: z.string(),
-    gender: z.string(),
+    country: z.string().min(1, 'Please select a country'),
+    gender: z.string().min(1, 'Please select a gender'),
     email: z.string().refine((val) => {
       const parts = val.split('@');
       return (
@@ -21,7 +25,21 @@ export const formSchema = z
       .regex(/[0-9]/, 'Must contain at least 1 number')
       .regex(/[^A-Za-z0-9]/, 'Must contain at least 1 special character'),
     confirmPassword: z.string().min(1, 'Please confirm your password'),
-    files: z.unknown(),
+    files: z
+      .instanceof(File, { message: 'Please upload an image' })
+      .refine((file) => file.size > 0, 'Please upload an image')
+      .refine(
+        (file) => file.size <= MAX_FILE_SIZE,
+        `File size must not exceed ${MAX_FILE_SIZE / 1024 / 1024}MB`
+      )
+      .refine(
+        (file) => IMAGE_TYPES.includes(file.type),
+        'Only JPEG and PNG files are allowed'
+      )
+      .transform((file) => convertToBase64(file)),
+    terms: z.coerce.boolean().refine((val) => val, {
+      message: 'You must accept the terms and conditions',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
