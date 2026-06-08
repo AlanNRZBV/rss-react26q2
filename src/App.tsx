@@ -15,7 +15,7 @@ function App() {
 
   return (
     <Container>
-      <div className="flex px-4 rounded-xl border dark:border-gray-700 dark:bg-gray-800">
+      <div className="flex px-4 rounded-xl border w-full dark:bg-gray-800">
         <DataContainer />
       </div>
       <div className="flex items-center justify-center grow">

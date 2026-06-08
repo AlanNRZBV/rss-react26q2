@@ -17,7 +17,7 @@ const DataItem: FC<DataItemProps> = ({ submission }) => {
     gender,
   } = submission;
   return (
-    <div className="flow-root">
+    <div className="">
       <dl className="-my-3 divide-y divide-gray-200 rounded border border-gray-200 text-sm dark:divide-gray-900 dark:border-gray-900">
         <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt className="font-medium text-gray-900 dark:text-white">Name</dt>
@@ -68,7 +68,11 @@ const DataItem: FC<DataItemProps> = ({ submission }) => {
         <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
           <dt className="font-medium text-gray-900 dark:text-white">Files</dt>
           <dd className="text-gray-700 sm:col-span-2 dark:text-gray-200">
-            {files as string}
+            <img
+              src={files as string}
+              alt={`Uploaded by ${name}`}
+              className="max-h-62.5 rounded border border-gray-200 object-cover shadow-sm dark:border-gray-700"
+            />
           </dd>
         </div>
       </dl>

@@ -48,7 +48,7 @@ const DataContainer = () => {
 
   if (data.length === 0) {
     return (
-      <div className="flex gap-2 my-6">
+      <div className="grid grid-cols-4 my-6 gap-2">
         {mockData.map(({ id, submission }) => (
           <DataItem key={id} submission={submission} />
         ))}
@@ -57,7 +57,7 @@ const DataContainer = () => {
   }
 
   return (
-    <div>
+    <div className="grid grid-cols-4 my-6 gap-2">
       {data.map(({ id, submission }) => (
         <DataItem key={id} submission={submission} />
       ))}
