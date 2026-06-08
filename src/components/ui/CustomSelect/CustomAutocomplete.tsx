@@ -9,7 +9,7 @@ export type SelectOption = {
 type CustomAutocompleteProps = ComponentProps<'input'> & {
   label: string;
   error?: string;
-  options: SelectOption[];
+  options: readonly SelectOption[];
 };
 
 const CustomAutocomplete = ({

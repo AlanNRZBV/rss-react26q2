@@ -90,4 +90,4 @@ export const COUNTRIES = [
   { value: 'Venezuela', label: 'Venezuela' },
   { value: 'Vietnam', label: 'Vietnam' },
   { value: 'Zimbabwe', label: 'Zimbabwe' },
-];
+] as const;

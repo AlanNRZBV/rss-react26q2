@@ -1,16 +1,22 @@
 import { z } from 'zod';
 import { create } from 'zustand/react';
 import { convertToBase64 } from '../lib/utils/convertToBase64.ts';
+import { GENDERS } from '../lib/constants/genders.ts';
+import { COUNTRIES } from '../lib/constants/countries.ts';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+const GENDER_VALUES = GENDERS.map((item) => item.value);
+const COUNTRY_VALUES = COUNTRIES.map((item) => item.value);
 
 export const formSchema = z
   .object({
     name: z.string().min(2, 'Name is too short'),
     age: z.coerce.number().min(1, 'You can not be that young'),
-    country: z.string().min(1, 'Please select a country'),
-    gender: z.string().min(1, 'Please select a gender'),
+    country: z.enum(COUNTRY_VALUES, {
+      message: 'Please select a valid country',
+    }),
+    gender: z.enum(GENDER_VALUES, { message: 'Please select a valid gender' }),
     email: z.string().refine((val) => {
       const parts = val.split('@');
       return (

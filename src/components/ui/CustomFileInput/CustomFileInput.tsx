@@ -16,7 +16,7 @@ const CustomFileInput = ({
   return (
     <label
       htmlFor={id}
-      className={`block cursor-pointer rounded border border-gray-300 bg-white p-4 text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 sm:p-6 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus-within:ring-offset-gray-900 ${
+      className={`block cursor-pointer rounded border bg-white p-4 text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus-within:ring-2 focus-within:ring-offset-2 sm:p-6 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus-within:ring-offset-gray-900 ${
         error
           ? 'border-red-500 focus-within:ring-red-500'
           : 'border-gray-300 focus-within:ring-indigo-500 dark:border-gray-700'
@@ -40,7 +40,7 @@ const CustomFileInput = ({
         </svg>
       </div>
       <input
-        accept="image/png, image/jpeg"
+        accept="image/png, image/jpeg, image/jpg"
         ref={ref}
         type="file"
         id={id}
