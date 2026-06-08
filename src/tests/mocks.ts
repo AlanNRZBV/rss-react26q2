@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import type { FormSchemaType } from '../store/store.ts';
 
 export const mockOnSuccess = vi.fn();
 export const mockAddSubmission = vi.fn();
@@ -20,7 +21,7 @@ export const validFormData = {
   files: new File(['hello'], 'hello.png', { type: 'image/png' }),
 };
 
-export const mockSubmission = {
+export const mockSubmission: FormSchemaType = {
   name: 'John Doe',
   email: 'john@example.com',
   password: 'Password123!',
