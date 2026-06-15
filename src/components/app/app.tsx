@@ -32,8 +32,8 @@ export const App = () => {
     isColumnModalOpen: false,
   });
 
-  const years = data ? getAvailableYears(data) : [];
-  const availableColumns = getAvailableColumns();
+  const years = useMemo(() => (data ? getAvailableYears(data) : []), [data]);
+  const availableColumns = useMemo(() => getAvailableColumns(), []);
 
   const handleSearch = useCallback((value: string) => {
     setState((prev) => ({ ...prev, searchQuery: value }));
