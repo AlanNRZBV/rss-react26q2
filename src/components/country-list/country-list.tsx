@@ -1,3 +1,5 @@
+import { memo, useMemo, useCallback } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 import type { Country } from '../../types';
 import { CountryCard } from '../country-card/country-card';
 import { getPopulationForYear, createYearDataMap } from '../../utils/data-transformers';
@@ -46,16 +48,22 @@ export const CountryList = memo(({
       });
   }, [countries, searchQuery, selectedRegion, selectedYear, sortField, sortOrder, yearDataMaps]);
 
-  return (
-    <div className={styles.countryList}>
-      {filteredCountries.map((country, index) => (
-        <CountryCard
-          key={index}
-          country={country}
-          selectedYear={selectedYear}
-          selectedColumns={selectedColumns}
-        />
-      ))}
-    </div>
+  const itemContent = useCallback(
+    (_index: number, country: Country) => (
+      <CountryCard
+        country={country}
+        selectedYear={selectedYear}
+        selectedColumns={selectedColumns}
+      />
+    ),
+    [selectedYear, selectedColumns],
   );
-};
+
+  return (
+    <Virtuoso
+      className={styles.countryList}
+      data={filteredCountries}
+      itemContent={itemContent}
+    />
+  );
+});
