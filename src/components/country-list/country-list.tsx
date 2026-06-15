@@ -15,7 +15,7 @@ type CountryListProps = {
   onYearChange: (year: number) => void;
 };
 
-export const CountryList = ({
+export const CountryList = memo(({
   countries,
   searchQuery,
   selectedColumns,
