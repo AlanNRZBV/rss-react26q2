@@ -1,0 +1,18 @@
+{
+  "nav": { "home": "Home", "about": "About" },
+  "search": { "placeholder": "Search...", "submit": "Catch!" },
+  "pagination": { "prev": "Previous page", "next": "Next page" },
+  "selection": {
+    "selected": "Items selected",
+    "clearAll": "Unselect all",
+    "download": "Download"
+  },
+  "notFound": { "title": "Hmm, nothing found", "body": "..." },
+  "about": {
+    "title": "Project Details",
+    "author": "Author",
+    "tasksRepo": "Tasks Repository",
+    "course": "Course Page"
+  },
+  "meta": { "title": "My App", "description": "My App is a..." }
+}
