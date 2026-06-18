@@ -1,25 +1,30 @@
-import { Link, type LinkProps } from '@tanstack/react-router';
-import type { FC, PropsWithChildren } from 'react';
+'use client';
+
+import type { ComponentProps, FC, PropsWithChildren } from 'react';
+import { Link, usePathname } from '../../../i18n/navigation';
 
 type CustomLinkProps = PropsWithChildren<
-  LinkProps & {
-    className?: string;
-  }
+  ComponentProps<typeof Link> & { className?: string }
 >;
 
 const CustomLink: FC<CustomLinkProps> = ({
   children,
   className = '',
+  href,
   ...props
 }) => {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
   return (
     <Link
+      href={href}
       {...props}
-      className={`inline-flex items-center rounded-sm border border-gray-200 px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white dark:focus:ring-offset-gray-900 ${className}`}
-      activeProps={{
-        className:
-          'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-800',
-      }}
+      className={`inline-flex items-center rounded-sm border px-3 py-2 font-medium transition-colors focus:z-10 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none ${
+        isActive
+          ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-800'
+          : 'border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'
+      } ${className}`}
     >
       {children}
     </Link>

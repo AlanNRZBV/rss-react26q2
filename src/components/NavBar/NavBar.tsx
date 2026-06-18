@@ -1,17 +1,17 @@
+'use client';
+
 import CustomLink from '../UI/CustomLink/CustomLink.tsx';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
 import { getPokemonsQueryOptions } from '../../hooks/usePokemons.ts';
+import { useTranslations } from 'next-intl';
 
 const NavBar = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations('nav');
 
   const handleRefresh = async () => {
     const k = getPokemonsQueryOptions().queryKey[0];
-    // eslint-disable-next-line @tanstack/query/prefer-query-options
-    await queryClient.invalidateQueries({
-      queryKey: [k],
-    });
     // eslint-disable-next-line @tanstack/query/prefer-query-options
     await queryClient.invalidateQueries({
       queryKey: [k],
@@ -22,8 +22,8 @@ const NavBar = () => {
 
   return (
     <nav className="flex justify-between gap-4">
-      <CustomLink to="/">Home</CustomLink>
-      <CustomLink to="/about">About</CustomLink>
+      <CustomLink href="/">{t('home')}</CustomLink>
+      <CustomLink href="/about">{t('home')}</CustomLink>
       <CustomButton onClick={handleRefresh} disabled={count > 0}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
