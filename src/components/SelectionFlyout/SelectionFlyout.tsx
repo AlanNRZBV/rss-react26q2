@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import BarContainer from '../UI/BarContainer/BarContainer.tsx';
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
 import {
@@ -5,13 +8,12 @@ import {
   useSelectedDetails,
   useSelectedPokemons,
 } from '../../store/store.ts';
-import { useCsvDownload } from '../../hooks/useCsvDownload.ts';
 
 const SelectionFlyout = () => {
+  const t = useTranslations('selection');
   const selectedPokemons = useSelectedPokemons();
   const selectedDetails = useSelectedDetails();
   const { clearPokemons, clearDetails } = usePokemonActions();
-  const { downloadCsv } = useCsvDownload();
 
   if (selectedPokemons.length === 0 && !selectedDetails) return null;
 
@@ -20,13 +22,13 @@ const SelectionFlyout = () => {
     clearDetails();
   };
 
-  const handleDownload = () => {
-    const dataToDownload = [
-      ...selectedPokemons,
-      ...(selectedDetails ? [selectedDetails] : []),
-    ];
-    downloadCsv(dataToDownload);
-  };
+  const idsToDownload = [
+    ...new Set([
+      ...selectedPokemons.map((p) => p.id),
+      ...(selectedDetails ? [selectedDetails.id] : []),
+    ]),
+  ];
+  const downloadHref = `/api/csv?ids=${idsToDownload.join(',')}`;
 
   return (
     <div
@@ -40,7 +42,7 @@ const SelectionFlyout = () => {
               onClick={clearPokemons}
               className="group flex items-center gap-3 rounded-full
               outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-              title="Clear selected list items"
+              title={t('clearListTitle')}
             >
               <span
                 className="flex h-8 w-8 shrink-0 items-center justify-center
@@ -57,7 +59,7 @@ const SelectionFlyout = () => {
                 text-gray-700 transition-colors group-hover:text-red-600
                 dark:text-gray-300 dark:group-hover:text-red-400"
               >
-                Items selected
+                {t('selected')}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -87,7 +89,7 @@ const SelectionFlyout = () => {
               onClick={clearDetails}
               className="group flex items-center gap-2 rounded-full
               outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-              title="Clear selected detail"
+              title={t('clearDetailTitle')}
             >
               <span className="relative flex size-3">
                 <span
@@ -105,7 +107,7 @@ const SelectionFlyout = () => {
                 text-indigo-600 transition-colors group-hover:text-red-600
                 dark:text-indigo-400 dark:group-hover:text-red-400"
               >
-                Details
+                {t('details')}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -133,9 +135,16 @@ const SelectionFlyout = () => {
             dark:hover:bg-transparent! shadow-none text-gray-500!
             hover:text-gray-900! dark:text-gray-400! dark:hover:text-white!"
           >
-            Unselect all
+            {t('clearAll')}
           </CustomButton>
-          <CustomButton onClick={handleDownload}>Download</CustomButton>
+          <a
+            href={downloadHref}
+            className="rounded-sm border border-gray-200 px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300
+            dark:hover:bg-gray-700 dark:hover:text-white
+            dark:focus:ring-offset-gray-900"
+          >
+            {t('download')}
+          </a>
         </div>
       </BarContainer>
     </div>

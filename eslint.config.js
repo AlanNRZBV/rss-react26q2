@@ -6,11 +6,9 @@ import reactPlugin from 'eslint-plugin-react';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import tseslint from 'typescript-eslint';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import pluginQuery from '@tanstack/eslint-plugin-query';
 
 export default defineConfig([
-  ...pluginQuery.configs['flat/recommended-strict'],
-  globalIgnores(['dist', 'coverage', 'src/routeTree.gen.ts']),
+  globalIgnores(['dist', '.next', 'coverage']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -33,7 +31,7 @@ export default defineConfig([
     rules: {
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true, allowExportNames: ['Route'] },
+        { allowConstantExport: true },
       ],
     },
   },

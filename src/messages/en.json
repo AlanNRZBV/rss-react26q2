@@ -5,9 +5,15 @@
   "selection": {
     "selected": "Items selected",
     "clearAll": "Unselect all",
-    "download": "Download"
+    "download": "Download",
+    "details": "Details",
+    "clearListTitle": "Clear selected list items",
+    "clearDetailTitle": "Clear selected detail"
   },
-  "notFound": { "title": "Hmm, nothing found", "body": "..." },
+  "notFound": {
+    "title": "Hmm, nothing found",
+    "body": "The page you are looking for does not exist."
+  },
   "about": {
     "title": "Project Details",
     "author": "Author",
