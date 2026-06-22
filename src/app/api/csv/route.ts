@@ -24,7 +24,14 @@ function buildCsvRow(item: PokemonDetailedData, origin: string) {
 
 export async function GET(request: NextRequest) {
   const idsParam = request.nextUrl.searchParams.get('ids') ?? '';
-  const ids = [...new Set(idsParam.split(',').map((id) => id.trim()).filter(Boolean))];
+  const ids = [
+    ...new Set(
+      idsParam
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean)
+    ),
+  ];
 
   if (ids.length === 0) {
     return new Response('No items selected', { status: 400 });
