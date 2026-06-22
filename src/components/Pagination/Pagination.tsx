@@ -1,65 +1,80 @@
-import type { FC, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '../../i18n/navigation';
+
+const buttonClass =
+  'grid size-8 place-content-center rounded border border-gray-200 transition-colors hover:bg-gray-50 rtl:rotate-180 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white';
+
+const itemClass =
+  'block size-8 rounded border border-gray-200 text-center text-sm/8 font-medium transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white';
+
+const activeItemClass =
+  'block size-8 rounded border border-indigo-600 bg-indigo-600 text-center text-sm/8 font-medium text-white dark:border-indigo-500 dark:bg-indigo-500';
+
+function buildHref(page: number, query: string) {
+  return {
+    pathname: '/' as const,
+    query: query ? { page, q: query } : { page },
+  };
+}
 
 type PaginationButtonProps = {
-  onClick: () => void;
+  page: number;
+  query: string;
   disabled: boolean;
   ariaLabel: string;
   children: ReactNode;
 };
 
-const PaginationButton: FC<PaginationButtonProps> = ({
-  onClick,
+const PaginationButton = ({
+  page,
+  query,
   disabled,
   ariaLabel,
   children,
-}) => (
-  <li>
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="grid size-8 place-content-center rounded border
-      border-gray-200 transition-colors hover:bg-gray-50 rtl:rotate-180
-      disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300
-      dark:hover:bg-gray-800 dark:hover:text-white"
-      aria-label={ariaLabel}
-    >
-      {children}
-    </button>
-  </li>
-);
-
-type PaginationItemProps = {
-  page: number;
-  isActive: boolean;
-  onClick: (page: number) => void;
-};
-
-const PaginationItem: FC<PaginationItemProps> = ({
-  page,
-  isActive,
-  onClick,
-}) => {
-  if (isActive) {
+}: PaginationButtonProps) => {
+  if (disabled) {
     return (
-      <li
-        className="block size-8 rounded border border-indigo-600
-        bg-indigo-600 text-center text-sm/8 font-medium text-white dark:border-indigo-500 dark:bg-indigo-500"
-      >
-        {page}
+      <li>
+        <span
+          className={`${buttonClass} pointer-events-none`}
+          aria-label={ariaLabel}
+        >
+          {children}
+        </span>
       </li>
     );
   }
 
   return (
     <li>
-      <button
-        onClick={() => onClick(page)}
-        className="block size-8 rounded border border-gray-200 text-center
-        text-sm/8 font-medium transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300
-        dark:hover:bg-gray-800 dark:hover:text-white"
+      <Link
+        href={buildHref(page, query)}
+        className={buttonClass}
+        aria-label={ariaLabel}
       >
+        {children}
+      </Link>
+    </li>
+  );
+};
+
+type PaginationItemProps = {
+  page: number;
+  query: string;
+  isActive: boolean;
+};
+
+const PaginationItem = ({ page, query, isActive }: PaginationItemProps) => {
+  if (isActive) {
+    return <li className={activeItemClass}>{page}</li>;
+  }
+
+  return (
+    <li>
+      <Link href={buildHref(page, query)} className={itemClass}>
         {page}
-      </button>
+      </Link>
     </li>
   );
 };
@@ -67,51 +82,43 @@ const PaginationItem: FC<PaginationItemProps> = ({
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  query?: string;
 };
 
-const Pagination: FC<PaginationProps> = ({
+const Pagination = async ({
   currentPage,
   totalPages,
-  onPageChange,
-}) => {
+  query = '',
+}: PaginationProps) => {
   if (totalPages <= 1) return null;
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages && page !== currentPage) {
-      onPageChange(page);
-    }
-  };
+  const t = await getTranslations('pagination');
 
-  const renderPageItems = () => {
-    const items = [];
+  const items = [];
+  let start = Math.max(1, currentPage - 2);
+  const end = Math.min(totalPages, start + 4);
+  if (end - start < 4) {
+    start = Math.max(1, end - 4);
+  }
 
-    let start = Math.max(1, currentPage - 2);
-    const end = Math.min(totalPages, start + 4);
-
-    if (end - start < 4) {
-      start = Math.max(1, end - 4);
-    }
-
-    for (let i = start; i <= end; i++) {
-      items.push(
-        <PaginationItem
-          key={i}
-          page={i}
-          isActive={i === currentPage}
-          onClick={handlePageChange}
-        />
-      );
-    }
-    return items;
-  };
+  for (let i = start; i <= end; i++) {
+    items.push(
+      <PaginationItem
+        key={i}
+        page={i}
+        query={query}
+        isActive={i === currentPage}
+      />
+    );
+  }
 
   return (
     <ul className="flex justify-center gap-1 text-gray-900 mt-8 mb-12">
       <PaginationButton
-        onClick={() => handlePageChange(currentPage - 1)}
+        page={currentPage - 1}
+        query={query}
         disabled={currentPage <= 1}
-        ariaLabel="Previous page"
+        ariaLabel={t('prev')}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -127,12 +134,13 @@ const Pagination: FC<PaginationProps> = ({
         </svg>
       </PaginationButton>
 
-      {renderPageItems()}
+      {items}
 
       <PaginationButton
-        onClick={() => handlePageChange(currentPage + 1)}
+        page={currentPage + 1}
+        query={query}
         disabled={currentPage >= totalPages}
-        ariaLabel="Next page"
+        ariaLabel={t('next')}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

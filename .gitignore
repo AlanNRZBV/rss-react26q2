@@ -25,3 +25,7 @@ dist-ssr
 *.sw?
 coverage
 .junie
+
+# ...
+.next
+next-env.d.ts

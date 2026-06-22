@@ -1,3 +1,5 @@
+'use client';
+
 import {
   createContext,
   useContext,
@@ -22,7 +24,10 @@ type ThemeProviderProps = {
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme');
+    if (typeof window === 'undefined') {
+      return 'dark';
+    }
+    const saved = window.localStorage.getItem('theme');
     return (saved as Theme) || 'dark';
   });
 
@@ -30,7 +35,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem('theme', theme);
+    window.localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

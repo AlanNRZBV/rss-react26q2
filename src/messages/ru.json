@@ -1,0 +1,24 @@
+{
+  "nav": { "home": "Главная", "about": "О проекте" },
+  "search": { "placeholder": "Поиск...", "submit": "Поймать!" },
+  "pagination": { "prev": "Предыдущая страница", "next": "Следующая страница" },
+  "selection": {
+    "selected": "Выбрано элементов",
+    "clearAll": "Снять выделение",
+    "download": "Скачать",
+    "details": "Детали",
+    "clearListTitle": "Очистить выбранные элементы списка",
+    "clearDetailTitle": "Очистить выбранную деталь"
+  },
+  "notFound": {
+    "title": "Хм, ничего не найдено",
+    "body": "Страница, которую вы ищете, не существует."
+  },
+  "about": {
+    "title": "Детали проекта",
+    "author": "Автор",
+    "tasksRepo": "Репозиторий заданий",
+    "course": "Страница курса"
+  },
+  "meta": { "title": "My App", "description": "My App — это..." }
+}

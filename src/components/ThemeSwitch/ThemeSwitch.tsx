@@ -1,3 +1,5 @@
+'use client';
+
 import CustomButton from '../UI/CustomButton/CustomButton.tsx';
 import { useAppTheme } from '../../context/ThemeContext.tsx';
 
