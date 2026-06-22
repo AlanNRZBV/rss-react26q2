@@ -1,191 +1,129 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import Pagination from './Pagination';
 
 describe('Pagination Component', () => {
-  it('renders nothing when totalPages is 1', () => {
-    const { container } = render(
-      <Pagination currentPage={1} totalPages={1} onPageChange={vi.fn()} />
-    );
+  it('renders nothing when totalPages is 1', async () => {
+    const ui = await Pagination({ currentPage: 1, totalPages: 1 });
+    const { container } = render(ui);
 
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders nothing when totalPages is 0', () => {
-    const { container } = render(
-      <Pagination currentPage={1} totalPages={0} onPageChange={vi.fn()} />
-    );
+  it('renders nothing when totalPages is 0', async () => {
+    const ui = await Pagination({ currentPage: 1, totalPages: 0 });
+    const { container } = render(ui);
 
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders pagination with previous and next buttons', () => {
-    render(
-      <Pagination currentPage={1} totalPages={5} onPageChange={vi.fn()} />
-    );
+  it('renders pagination with previous and next links', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 5 }));
 
-    expect(
-      screen.getByRole('button', { name: /previous page/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /next page/i })
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText(/previous page/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/next page/i)).toBeInTheDocument();
   });
 
-  it('renders correct page numbers', () => {
-    render(
-      <Pagination currentPage={1} totalPages={5} onPageChange={vi.fn()} />
-    );
+  it('renders correct page numbers', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 5 }));
 
     for (let i = 1; i <= 5; i++) {
       expect(screen.getByText(String(i))).toBeInTheDocument();
     }
   });
 
-  it('disables previous button on the first page', () => {
-    render(
-      <Pagination currentPage={1} totalPages={5} onPageChange={vi.fn()} />
-    );
+  it('renders previous as a disabled span on the first page', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 5 }));
 
-    const prevButton = screen.getByRole('button', { name: /previous page/i });
-
-    expect(prevButton).toBeDisabled();
+    const prev = screen.getByLabelText(/previous page/i);
+    expect(prev.tagName).toBe('SPAN');
   });
 
-  it('disables next button on the last page', () => {
-    render(
-      <Pagination currentPage={5} totalPages={5} onPageChange={vi.fn()} />
-    );
+  it('renders next as a disabled span on the last page', async () => {
+    render(await Pagination({ currentPage: 5, totalPages: 5 }));
 
-    const nextButton = screen.getByRole('button', { name: /next page/i });
-
-    expect(nextButton).toBeDisabled();
+    const next = screen.getByLabelText(/next page/i);
+    expect(next.tagName).toBe('SPAN');
   });
 
-  it('enables both buttons on a middle page', () => {
-    render(
-      <Pagination currentPage={3} totalPages={5} onPageChange={vi.fn()} />
-    );
+  it('renders both prev and next as links on a middle page', async () => {
+    render(await Pagination({ currentPage: 3, totalPages: 5 }));
 
-    expect(
-      screen.getByRole('button', { name: /previous page/i })
-    ).not.toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: /next page/i })
-    ).not.toBeDisabled();
+    expect(screen.getByLabelText(/previous page/i).tagName).toBe('A');
+    expect(screen.getByLabelText(/next page/i).tagName).toBe('A');
   });
 
-  it('calls onPageChange with next page when next button is clicked', () => {
-    const onPageChange = vi.fn();
+  it('links to the next page href when next is not disabled', async () => {
+    render(await Pagination({ currentPage: 2, totalPages: 5 }));
 
-    render(
-      <Pagination currentPage={2} totalPages={5} onPageChange={onPageChange} />
+    expect(screen.getByLabelText(/next page/i)).toHaveAttribute(
+      'href',
+      '/?page=3'
     );
-
-    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
-
-    expect(onPageChange).toHaveBeenCalledWith(3);
   });
 
-  it('calls onPageChange with previous page when previous button is clicked', () => {
-    const onPageChange = vi.fn();
+  it('links to the previous page href when previous is not disabled', async () => {
+    render(await Pagination({ currentPage: 3, totalPages: 5 }));
 
-    render(
-      <Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} />
+    expect(screen.getByLabelText(/previous page/i)).toHaveAttribute(
+      'href',
+      '/?page=2'
     );
-
-    fireEvent.click(screen.getByRole('button', { name: /previous page/i }));
-
-    expect(onPageChange).toHaveBeenCalledWith(2);
   });
 
-  it('calls onPageChange when a page number is clicked', () => {
-    const onPageChange = vi.fn();
+  it('renders a link for each page number', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 5 }));
 
-    render(
-      <Pagination currentPage={1} totalPages={5} onPageChange={onPageChange} />
-    );
-
-    fireEvent.click(screen.getByText('4'));
-
-    expect(onPageChange).toHaveBeenCalledWith(4);
+    const pageFour = screen.getByText('4');
+    expect(pageFour.tagName).toBe('A');
+    expect(pageFour).toHaveAttribute('href', '/?page=4');
   });
 
-  it('does not call onPageChange when the active page is clicked', () => {
-    const onPageChange = vi.fn();
-
-    render(
-      <Pagination currentPage={3} totalPages={5} onPageChange={onPageChange} />
-    );
+  it('renders the active page as a plain list item, not a link', async () => {
+    render(await Pagination({ currentPage: 3, totalPages: 5 }));
 
     const activePage = screen.getByText('3');
-
     expect(activePage.tagName).toBe('LI');
-    expect(onPageChange).not.toHaveBeenCalled();
   });
 
-  it('does not call onPageChange when previous is clicked on the first page', () => {
-    const onPageChange = vi.fn();
-
+  it('preserves the query string in page links', async () => {
     render(
-      <Pagination currentPage={1} totalPages={5} onPageChange={onPageChange} />
+      await Pagination({ currentPage: 1, totalPages: 5, query: 'pikachu' })
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /previous page/i }));
-
-    expect(onPageChange).not.toHaveBeenCalled();
+    expect(screen.getByText('2')).toHaveAttribute(
+      'href',
+      '/?page=2&q=pikachu'
+    );
   });
 
-  it('does not call onPageChange when next is clicked on the last page', () => {
-    const onPageChange = vi.fn();
-
-    render(
-      <Pagination currentPage={5} totalPages={5} onPageChange={onPageChange} />
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /next page/i }));
-
-    expect(onPageChange).not.toHaveBeenCalled();
-  });
-
-  it('shows at most 5 page items for large total pages', () => {
-    render(
-      <Pagination currentPage={5} totalPages={20} onPageChange={vi.fn()} />
-    );
-
-    const allButtons = screen.getAllByRole('button');
+  it('shows at most 5 page items for large total pages', async () => {
+    render(await Pagination({ currentPage: 5, totalPages: 20 }));
 
     expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('7')).toBeInTheDocument();
     expect(screen.queryByText('2')).not.toBeInTheDocument();
     expect(screen.queryByText('8')).not.toBeInTheDocument();
-    expect(allButtons).toHaveLength(6);
   });
 
-  it('adjusts page window at the start of pagination', () => {
-    render(
-      <Pagination currentPage={1} totalPages={20} onPageChange={vi.fn()} />
-    );
+  it('adjusts page window at the start of pagination', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 20 }));
 
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('5')).toBeInTheDocument();
     expect(screen.queryByText('6')).not.toBeInTheDocument();
   });
 
-  it('adjusts page window at the end of pagination', () => {
-    render(
-      <Pagination currentPage={20} totalPages={20} onPageChange={vi.fn()} />
-    );
+  it('adjusts page window at the end of pagination', async () => {
+    render(await Pagination({ currentPage: 20, totalPages: 20 }));
 
     expect(screen.getByText('16')).toBeInTheDocument();
     expect(screen.getByText('20')).toBeInTheDocument();
     expect(screen.queryByText('15')).not.toBeInTheDocument();
   });
 
-  it('renders only 2 pages when totalPages is 2', () => {
-    render(
-      <Pagination currentPage={1} totalPages={2} onPageChange={vi.fn()} />
-    );
+  it('renders only 2 pages when totalPages is 2', async () => {
+    render(await Pagination({ currentPage: 1, totalPages: 2 }));
 
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();

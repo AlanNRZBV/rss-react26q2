@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import ProjectDetails from './ProjectDetails';
+import ProjectDetails from './ProjectDetails.tsx';
 
 describe('ProjectDetails Component', () => {
-  it('Renders project details correctly', () => {
-    render(<ProjectDetails />);
+  it('Renders project details correctly', async () => {
+    render(await ProjectDetails());
 
     expect(screen.getByText('Project Details')).toBeInTheDocument();
     expect(screen.getByText('Author')).toBeInTheDocument();
@@ -15,8 +15,8 @@ describe('ProjectDetails Component', () => {
     expect(screen.getByText('Rs.school React')).toBeInTheDocument();
   });
 
-  it('Renders links with correct hrefs', () => {
-    render(<ProjectDetails />);
+  it('Renders links with correct hrefs', async () => {
+    render(await ProjectDetails());
 
     const authorLink = screen.getByText('Alan');
     expect(authorLink).toHaveAttribute('href', 'https://github.com/AlanNRZBV');

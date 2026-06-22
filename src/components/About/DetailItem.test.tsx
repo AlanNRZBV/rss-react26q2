@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { DetailItem } from './DetailItem';
+import { DetailItem } from './DetailItem.tsx';
 
 describe('DetailItem Component', () => {
   it('Renders label and children correctly', () => {

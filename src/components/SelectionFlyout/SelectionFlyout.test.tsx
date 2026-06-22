@@ -6,19 +6,16 @@ import {
   useSelectedDetails,
   usePokemonActions,
 } from '../../store/store';
-import { useCsvDownload } from '../../hooks/useCsvDownload';
 import {
   mockPokemonList,
   mockPokemonDetailed,
 } from '../../test-utils/mocks/pokemonData';
 
 vi.mock('../../store/store');
-vi.mock('../../hooks/useCsvDownload');
 
 describe('SelectionFlyout Component', () => {
   const mockClearPokemons = vi.fn();
   const mockClearDetails = vi.fn();
-  const mockDownloadCsv = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -27,9 +24,6 @@ describe('SelectionFlyout Component', () => {
       clearDetails: mockClearDetails,
       togglePokemons: vi.fn(),
       toggleDetails: vi.fn(),
-    });
-    vi.mocked(useCsvDownload).mockReturnValue({
-      downloadCsv: mockDownloadCsv,
     });
   });
 
@@ -86,19 +80,36 @@ describe('SelectionFlyout Component', () => {
     expect(mockClearDetails).toHaveBeenCalled();
   });
 
-  it('calls downloadCsv with all data when Download is clicked', () => {
+  it('builds a download link with the ids of all selected items', () => {
     vi.mocked(useSelectedPokemons).mockReturnValue(mockPokemonList);
     vi.mocked(useSelectedDetails).mockReturnValue(mockPokemonDetailed);
 
     render(<SelectionFlyout />);
 
-    const downloadButton = screen.getByText(/Download/i);
-    fireEvent.click(downloadButton);
+    const downloadLink = screen.getByText(/Download/i);
+    const expectedIds = [
+      ...new Set([
+        ...mockPokemonList.map((p) => p.id),
+        mockPokemonDetailed.id,
+      ]),
+    ];
+    expect(downloadLink).toHaveAttribute(
+      'href',
+      `/api/csv?ids=${expectedIds.join(',')}`
+    );
+  });
 
-    expect(mockDownloadCsv).toHaveBeenCalledWith([
-      ...mockPokemonList,
-      mockPokemonDetailed,
-    ]);
+  it('deduplicates ids shared between selected list and selected detail', () => {
+    vi.mocked(useSelectedPokemons).mockReturnValue([mockPokemonDetailed]);
+    vi.mocked(useSelectedDetails).mockReturnValue(mockPokemonDetailed);
+
+    render(<SelectionFlyout />);
+
+    const downloadLink = screen.getByText(/Download/i);
+    expect(downloadLink).toHaveAttribute(
+      'href',
+      `/api/csv?ids=${mockPokemonDetailed.id}`
+    );
   });
 
   it('calls clearAll when Unselect all is clicked', () => {
